@@ -1,92 +1,101 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   map_maker.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: araji <araji@student.1337.ma>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/01 23:22:35 by araji             #+#    #+#             */
+/*   Updated: 2025/02/02 00:48:25 by araji            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "solong.h"
 
-int count_lines_and_columns(int fd, int *rows, int *cols)
+int	count_lines_and_columns(int fd, int *rows, int *cols)
 {
-    char *line;
-    *rows = 0;
-    *cols = 0;
+	char	*line;
+	int		line_len;
 
-    while ((line = get_next_line(fd)) != NULL) {
-        int line_len = strlen(line); //		make ft_strlen
-        if (*rows == 0)
-            *cols = line_len; // Set the initial column count
-        else if (line_len != *cols) {// check if they're all the same
-            free(line);
-            return 0;
-        }
-        (*rows)++;
-        free(line);
-    }
-    return (*rows > 0 && *cols > 0 && *rows != *cols); // Valid rectangle, but NOT A SQUARE(else : remove this part '*rows != *cols' )
+	*rows = 0;
+	*cols = 0;
+	line = get_next_line(fd);
+	while (line != NULL)
+	{
+		line_len = strlen(line); // make it ft_strlen
+		if (*rows == 0)
+			*cols = line_len;
+		else if (line_len != *cols)
+		{
+			free(line);
+			return (0);
+		}
+		(*rows)++;
+		free(line);
+		line = get_next_line(fd);
+	}
+	// Valid rectangle, but NOT A SQUARE(else
+	//remove this part '*rows != *cols' )
+	return (*rows > 0 && *cols > 0 && *rows != *cols);
 }
 
-char **allocate_map(int rows, int cols)
+char	**allocate_map(int rows, int cols)
 {
-	int i;
-    char **map;
+	int		i;
+	char	**map;
 
 	map = malloc(rows * sizeof(char *));
-    if (!map) {
-        perror("Failed to allocate memory for map rows");
-        return NULL;
-    }
-
-	i = 0;
-    while (i < rows)
+	if (!map)
 	{
-        map[i] = malloc((cols + 1) * sizeof(char)); // +1 for null terminator
-        if (!map[i]) {
-            perror("Failed to allocate memory for map columns");
-            // Free previously allocated memory
-            free_map(map, rows);
-            return NULL;
-        }
+		perror("Failed to allocate memory for map rows");
+		return (NULL);
+	}
+	i = 0;
+	while (i < rows)
+	{
+		map[i] = malloc((cols + 1) * sizeof(char));
+		if (!map[i])
+		{
+			perror("Failed to allocate memory for map columns");
+			free_map(map, rows);
+			return (NULL);
+		}
 		i++;
-    }
-
-    return map;
+	}
+	return (map);
 }
 
-void populate_map(int fd, char **map, int rows, int cols)
+void	populate_map(int fd, char **map, int rows, int cols)
 {
-    char *line;
-	int i;
+	char	*line;
+	int		i;
 
 	line = NULL;
 	i = 0;
-
-    while (i < rows)
+	while (i < rows)
 	{
-        line = get_next_line(fd);
-        if (!line) {
-            break; // Handle unexpected end of file
-        }
-        strncpy(map[i], line, cols);//							ft_strncpy
-        map[i][cols] = '\0'; // Null-terminate the row
-        free(line); // Free the line after copying
+		line = get_next_line(fd);
+		if (!line)
+			break ;
+		strncpy(map[i], line, cols);//							ft_strncpy
+		map[i][cols] = '\0';
+		free(line);
 		i++;
-    }
+	}
 }
 
-char **make_map(int fd, int *rows, int *cols)
+char	**make_map(int fd, int *rows, int *cols)
 {
-	int fd2;
+	int		fd2;
+	char	**map;
 
-    // First pass: count rows and columns
-    if (!count_lines_and_columns(fd, rows, cols)) {
-        return (NULL);
-    }
-
-    // Allocate memory for the map
-    char **map = allocate_map(*rows, *cols);
-    if (!map) {
-        return (NULL);
-    }
-
-    // Second pass: populate the map
-	fd2 = open("map.ber", O_RDONLY);  //						file opening to close or change name
-    populate_map(fd2, map, *rows, *cols);
+	if (!count_lines_and_columns(fd, rows, cols))
+		return (NULL);
+	map = allocate_map(*rows, *cols);
+	if (!map)
+		return (NULL);
+	fd2 = open("map.ber", O_RDONLY);// find a solution to opening this shit
+	populate_map(fd2, map, *rows, *cols);
 	close(fd2);
-
-    return (map);
+	return (map);
 }
