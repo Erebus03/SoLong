@@ -8,19 +8,24 @@ int count_lines_and_columns(int fd, int *rows, int *cols)
 
     while ((line = get_next_line(fd)) != NULL) {
         int line_len = strlen(line); //		make ft_strlen
+
         if (*rows == 0)
             *cols = line_len; // Set the initial column count
+
         else if (line_len != *cols) {// check if they're all the same
             free(line);
             return 0;
         }
+
         (*rows)++;
         free(line);
     }
+
+	//ask if a empty map is valid to work on or should it throw an error
     return (*rows > 0 && *cols > 0 && *rows != *cols); // Valid rectangle, but NOT A SQUARE(else : remove this part '*rows != *cols' )
 }
 
-char **allocate_map(int rows, int cols)
+static char **allocate_map(int rows, int cols)
 {
 	int i;
     char **map;
@@ -47,7 +52,7 @@ char **allocate_map(int rows, int cols)
     return map;
 }
 
-void populate_map(int fd, char **map, int rows, int cols)
+static void populate_map(int fd, char **map, int rows, int cols)
 {
     char *line;
 	int i;
@@ -90,3 +95,67 @@ char **make_map(int fd, int *rows, int *cols)
 
     return (map);
 }
+
+
+
+
+
+/*
+void    print_map(char map[5][11])
+{
+    int i;
+
+    i = 0;
+    while (i < 5)
+    {
+        printf("%s\n", map[i]);
+        i++;
+    }
+}
+
+void    flood_fill(char map[5][11], int x, int y)
+{
+    if (x < 0 || x >= 10 || y < 0 || y >= 5)
+        return ;
+    if (map[y][x] == '1' || map[y][x] == 'V' || map[y][x] == 'C' || map[y][x] == 'E')
+        return ;
+
+    map[y][x] = 'V';
+    
+    flood_fill(map, x - 1, y);
+    flood_fill(map, x + 1, y);
+    flood_fill(map, x, y + 1);
+    flood_fill(map, x, y - 1);
+}
+
+int main(void)
+{
+    char map[5][11] = {
+        "1111111111",
+        "1010000001",
+        "101PCC0E01",
+        "1000000001",
+        "1111111111"
+    };
+
+    printf("Before:\n");
+    print_map(map);
+
+    flood_fill(map, 3, 3);
+    printf("\nAfter:\n");
+    print_map(map);
+
+    for (int y = 0; y < 5; y++)
+    {
+        for (int x = 0; x < 10; x++)
+        {
+            if (map[y][x] == '0')
+            {
+                printf("something aint reachable!\n");
+                return 1;
+            }
+        }
+    }
+    printf("all items are reachable!\n");
+    return (0);
+}*/
