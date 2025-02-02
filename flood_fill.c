@@ -12,28 +12,6 @@
 
 #include "solong.h"
 
-/*
-
-    my foold_fill logic is prbly wrong 
-    i made return a error if it found at least one 0
-    i should actually only check if there is a path
-				to all the coins and the exit.
-
-*/
-
-void	flood_fill(char **map, int x, int y)
-{
-	if (x < 0 || x >= 10 || y < 0 || y >= 5)
-		return ;
-	if (map[y][x] == '1' || map[y][x] == 'V')
-		return ;
-	map[y][x] = 'V';
-	flood_fill(map, x - 1, y);
-	flood_fill(map, x + 1, y);
-	flood_fill(map, x, y + 1);
-	flood_fill(map, x, y - 1);
-}
-
 int	check_reachability(char **map, int *rows, int *cols)
 {
 	int	i;
@@ -49,12 +27,12 @@ int	check_reachability(char **map, int *rows, int *cols)
 		{
 			if (map[i][j] == 'C')
 			{
-				printf("item(%d, %d) is not reachable\n", i, j);
+				ft_printf("item(%d, %d) is not reachable\n", i, j);
 				error = 1;
 			}
 			else if (map[i][j] == 'E')
 			{
-				printf("exit(%d, %d) is not reachable\n", i, j);
+				ft_printf("exit(%d, %d) is not reachable\n", i, j);
 				error = 1;
 			}
 			j++;
@@ -67,19 +45,36 @@ int	check_reachability(char **map, int *rows, int *cols)
 		return (1);
 }
 
+void	flood_fill(char **map, int x, int y)
+{
+	if (x < 0 || x >= 10 || y < 0 || y >= 5)
+		return ;
+	if (map[y][x] == '1' || map[y][x] == 'V')
+		return ;
+	map[y][x] = 'V';
+	flood_fill(map, x - 1, y);
+	flood_fill(map, x + 1, y);
+	flood_fill(map, x, y + 1);
+	flood_fill(map, x, y - 1);
+}
+
 int	all_is_reachable(int x, int y, int rows, int cols)
 {
 	int		fd;
 	char	**map_copy;
+	int		ret;
 
 	fd = open("map.ber", O_RDONLY);
 	map_copy = make_map(fd, &rows, &cols);
 	flood_fill(map_copy, x, y);
-	if (check_reachability(map_copy, &rows, &cols) == 0)
-	{
-		free_map(map_copy, rows);
-		return (0);
-	}
-	else
-		return (1);
+	ret = check_reachability(map_copy, &rows, &cols);
+	free_map(map_copy, rows);
+	return (ret);
+	/*
+
+		I NEED TO FREE IT ETHER WAY
+		i can do
+		>	return (check_reachability(map_copy, &rows, &cols) == 0);
+		and then if its zero is_map_valid is gona free it then
+	*/
 }

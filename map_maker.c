@@ -22,7 +22,7 @@ int	count_lines_and_columns(int fd, int *rows, int *cols)
 	line = get_next_line(fd);
 	while (line != NULL)
 	{
-		line_len = strlen(line); // make it ft_strlen
+		line_len = ft_strlen(line); // make it ft_strlen
 		if (*rows == 0)
 			*cols = line_len;
 		else if (line_len != *cols)
@@ -34,6 +34,7 @@ int	count_lines_and_columns(int fd, int *rows, int *cols)
 		free(line);
 		line = get_next_line(fd);
 	}
+	ft_printf("\n\nr%d c%d\n\n", *rows, *cols);
 	// Valid rectangle, but NOT A SQUARE(else
 	//remove this part '*rows != *cols' )
 	return (*rows > 0 && *cols > 0 && *rows != *cols);
@@ -77,7 +78,7 @@ void	populate_map(int fd, char **map, int rows, int cols)
 		line = get_next_line(fd);
 		if (!line)
 			break ;
-		strncpy(map[i], line, cols);//							ft_strncpy
+		ft_strncpy(map[i], line, cols);//					make ft_strncpy
 		map[i][cols] = '\0';
 		free(line);
 		i++;

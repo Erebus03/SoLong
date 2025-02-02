@@ -15,10 +15,12 @@
 
 //#include "minilibx-linux/mlx.h"
 # include "gnl/get_next_line.h"
-//#include "ft_printf/ft_printf.h"
-//#include "libft/libft.h"
+#include "ft_printf/ft_printf.h"
+#include "libft/libft.h"
+#include "utils/utils.h"
+
 # include <string.h>
-// #include <stdio.h>
+//#include <stdio.h>
 # include <stdlib.h>
 # include <fcntl.h>
 
