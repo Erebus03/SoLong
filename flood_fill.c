@@ -6,43 +6,36 @@
 /*   By: araji <araji@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 23:22:53 by araji             #+#    #+#             */
-/*   Updated: 2025/02/02 00:53:34 by araji            ###   ########.fr       */
+/*   Updated: 2025/02/02 21:16:02 by araji            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "solong.h"
+#include <fcntl.h>
 
 int	check_reachability(char **map, int *rows, int *cols)
 {
 	int	i;
 	int	j;
-	int	error;
+	int	return_value;
 
 	i = 0;
-	error = 0;
+	return_value = 1;
 	while (i < *rows)
 	{
 		j = 0;
 		while (j < *cols)
 		{
-			if (map[i][j] == 'C')
+			if (map[i][j] == 'C' || map[i][j] == 'E')
 			{
-				ft_printf("item(%d, %d) is not reachable\n", i, j);
-				error = 1;
-			}
-			else if (map[i][j] == 'E')
-			{
-				ft_printf("exit(%d, %d) is not reachable\n", i, j);
-				error = 1;
+				ft_printf("Position(%d, %d) is not reachable\n", i, j);
+				return_value = 0;
 			}
 			j++;
 		}
 		i++;
 	}
-	if (error == 1)
-		return (0);
-	else
-		return (1);
+	return (return_value);
 }
 
 void	flood_fill(char **map, int x, int y)
@@ -70,11 +63,4 @@ int	all_is_reachable(int x, int y, int rows, int cols)
 	ret = check_reachability(map_copy, &rows, &cols);
 	free_map(map_copy, rows);
 	return (ret);
-	/*
-
-		I NEED TO FREE IT ETHER WAY
-		i can do
-		>	return (check_reachability(map_copy, &rows, &cols) == 0);
-		and then if its zero is_map_valid is gona free it then
-	*/
 }

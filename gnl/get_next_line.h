@@ -6,7 +6,7 @@
 /*   By: araji <araji@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 12:12:00 by araji             #+#    #+#             */
-/*   Updated: 2025/02/01 23:20:22 by araji            ###   ########.fr       */
+/*   Updated: 2025/02/02 21:17:38 by araji            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define GET_NEXT_LINE_H
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 1
+#  define BUFFER_SIZE 100
 # endif
 
 # include <string.h>

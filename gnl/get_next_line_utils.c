@@ -6,7 +6,7 @@
 /*   By: araji <araji@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 12:11:39 by araji             #+#    #+#             */
-/*   Updated: 2024/12/05 13:29:47 by araji            ###   ########.fr       */
+/*   Updated: 2025/02/02 22:49:47 by araji            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	ft_lstclear(t_gnl_list **lst)
 {
 	t_gnl_list	*tmp;
 
-	if (!lst)
+	if (!lst || !*lst)
 		return ;
 	while (*lst)
 	{
@@ -47,6 +47,7 @@ void	ft_lstclear(t_gnl_list **lst)
 		free(*lst);
 		*lst = tmp;
 	}
+	*lst = NULL;
 }
 
 t_gnl_list	*ft_lstnew(char *content)
