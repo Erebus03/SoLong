@@ -6,7 +6,7 @@
 /*   By: araji <araji@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 12:11:55 by araji             #+#    #+#             */
-/*   Updated: 2025/02/02 22:21:24 by araji            ###   ########.fr       */
+/*   Updated: 2025/02/04 05:50:26 by araji            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ void	create_list(t_gnl_list **lst, int fd)
 			return ;
 		new_node->str = malloc((size_t)BUFFER_SIZE + 1);
 		bytes_read = read(fd, new_node->str, (size_t)BUFFER_SIZE);
-		if (bytes_read == -1 || bytes_read ==  0)
+		if (bytes_read == -1 || bytes_read == 0)
 		{
 			free(new_node->str);
 			free(new_node);

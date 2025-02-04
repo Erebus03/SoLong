@@ -6,7 +6,7 @@
 /*   By: araji <araji@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 23:22:40 by araji             #+#    #+#             */
-/*   Updated: 2025/02/02 20:59:31 by araji            ###   ########.fr       */
+/*   Updated: 2025/02/04 06:39:54 by araji            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	update_stats(char cell, int i, int j, t_vars *variables)
 		variables->coin++;
 }
 
-void	check_cells(char **map, t_vars *vars, int rows, int cols)
+int	check_cells(char **map, t_vars *vars, int rows, int cols)
 {
 	int		i;
 	int		j;
@@ -59,12 +59,19 @@ void	check_cells(char **map, t_vars *vars, int rows, int cols)
 		while (j < cols)
 		{
 			cell = map[i][j];
+			if (cell != 'C' && cell != 'P' && cell != 'E'
+				&& cell != '0' && cell != '1')
+			{
+				ft_printf("[%c] is no valid chracter!\n", cell);
+				return (0);
+			}
 			if (cell == 'C' || cell == 'E' || cell == 'P')
 				update_stats(cell, i, j, vars);
 			j++;
 		}
 		i++;
 	}
+	return (1);
 }
 
 int	check_boundries(int rows, int cols, char **map)
@@ -98,7 +105,8 @@ int	is_map_valid(char **map, t_map *grid, t_vars *var, char *filename)
 {
 	if (check_boundries(grid->rows, grid->cols, map) == 0)
 		return (0);
-	check_cells(map, var, grid->rows, grid->cols);
+	if (!check_cells(map, var, grid->rows, grid->cols))
+		return (0);
 	if (error_handling(var) == 0)
 		return (0);
 	if (all_is_reachable(var->p_pos[0], var->p_pos[1], grid, filename) == 0)

@@ -6,18 +6,46 @@
 /*   By: araji <araji@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 23:22:47 by araji             #+#    #+#             */
-/*   Updated: 2025/02/02 21:41:04 by araji            ###   ########.fr       */
+/*   Updated: 2025/02/04 06:32:52 by araji            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "solong.h"
+#include <fcntl.h>
+
+/*
+	check file name and all that
+	check map and stuff
+	start rendering
+*/
+int	check_file_name(char *filename)
+{
+	char	*ext;
+
+	ext = ".ber";
+	if (ft_strncmp((filename + (ft_strlen(filename) - 4)), ext, 4) != 0)
+	{
+		ft_printf("File is not .ber\n");
+		return (0);
+	}
+	if (filename[0] == '.' && ft_strncmp(filename, ".ber", 4) != 0)
+	{
+		ft_printf("Hidden file\n");
+		return (0);
+	}
+	return (1);
+}
+
+void	render_map(void)
+{
+	ft_printf("All good, get rendering..\n");
+}
 
 int	main(int ac, char **av)
 {
 	char	**map;
 	t_vars	*var;
 	t_map	*grid;
-	char	*file_ext;
 	int		fd;
 	int		valid_map;
 
@@ -26,17 +54,8 @@ int	main(int ac, char **av)
 		ft_printf("Valid args: %s <map file name>\n", av[0]);
 		exit(1);
 	}
-	file_ext = ".ber";
-	if (ft_strncmp(av[1] + (ft_strlen(av[1]) - 4), file_ext, 4) != 0)
-	{
-		ft_printf("not .ber\n");
+	if (!check_file_name(av[1]))
 		return (1);
-	}
-	if (av[1][0] == '.' && ft_strncmp(av[1], ".ber", 4) != 0)
-	{
-		ft_printf("hidden file\n");
-		return (1);
-	}
 	fd = open(av[1], O_RDONLY);
 	if (fd == -1)
 	{
@@ -66,13 +85,14 @@ int	main(int ac, char **av)
 	printf("Map (rows: %d, cols: %d):\n", grid->rows, grid->cols);
 	valid_map = is_map_valid(map, grid, var, av[1]);
 	if (valid_map == 0)
+	{
 		printf("Map not valid!");
+		free_map(map, grid->rows);
+		free(grid);
+		free(var);
+		close(fd);
+	}
 	else
-		printf("Start rendering..");
-	free_map(map, grid->rows);
-	free(grid);
-	free(var);
-	
-	close(fd);
+		render_map();
 	return (0);
 }
