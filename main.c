@@ -12,13 +12,12 @@
 
 #include "solong.h"
 
-int	main(int ac, const char **av)
+int	main(int ac, char **av)
 {
 	char	**map;
 	t_vars	*var;
+	t_map	*grid;
 	char	*file_ext;
-	int		rows;
-	int		cols;
 	int		fd;
 	int		valid_map;
 
@@ -45,25 +44,35 @@ int	main(int ac, const char **av)
 		exit (1);
 	}
 	var = malloc(sizeof(t_vars));
-	if (!var)
+	grid = malloc(sizeof(t_map));
+	if (!var || !grid)
 	{
-		ft_printf("Memory allocation failed for variables");
+		ft_printf("Memory allocation failed for variables or grid!");
+		free(var);
+		free(grid);
 		return (1);
 	}
-	map = make_map(fd, &rows, &cols);
+	*var = (t_vars){{0, 0}, 0, 0, 0};
+	*grid = (t_map){0, 0};
+	map = make_map(fd, grid, av[1]);
 	if (!map)
 	{
 		ft_printf("Failed to translate map.\n");
 		free(var);
+		free(grid);
 		close(fd);
 		return (1);
 	}
-	ft_printf("Map (rows: %d, cols: %d):\n", rows, cols);
-	*var = (t_vars){{0, 0}, 0, 0, 0};
-	valid_map = is_map_valid(map, rows, cols, var);
-	ft_printf("is map valid >%d< (1 if valid)\n\n", valid_map);
-	free_map(map, rows);
+	printf("Map (rows: %d, cols: %d):\n", grid->rows, grid->cols);
+	valid_map = is_map_valid(map, grid, var, av[1]);
+	if (valid_map == 0)
+		printf("Map not valid!");
+	else
+		printf("Start rendering..");
+	free_map(map, grid->rows);
+	free(grid);
 	free(var);
+	
 	close(fd);
 	return (0);
 }

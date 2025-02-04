@@ -24,32 +24,32 @@ void	free_map(char **map, int rows)
 	free(map);
 }
 
-int	count_lines_and_columns(int fd, int *rows, int *cols)
+int	count_lines_and_columns(int fd, t_map *grid)
 {
 	char	*line;
 	int		line_len;
 
-	*rows = 0;
-	*cols = 0;
+	grid->rows = 0;
+	grid->cols = 0;
 	line = get_next_line(fd);
 	while (line != NULL)
 	{
 		line_len = ft_strlen(line);
-		if (*rows == 0)
-			*cols = line_len;
-		else if (line_len != *cols)
+		if (grid->rows == 0)
+			grid->cols = line_len;
+		else if (line_len != grid->cols)
 		{
 			free(line);
+			ft_printf("Map ain't rectangular!\n");
 			return (0);
 		}
-		(*rows)++;
+		(grid->rows)++;
 		free(line);
 		line = get_next_line(fd);
 	}
 	free(line);
-	ft_printf("\n\nr%d c%d\n\n", *rows, *cols);
 	// Valid rectangle, but NOT A SQUARE = remove'*rows != *cols'
-	return (*rows > 0 && *cols > 0 && *rows != *cols);
+	return (grid->rows > 0 && grid->cols > 0 && grid->rows != grid->cols);
 }
 
 char	**allocate_map(int rows, int cols)
@@ -78,38 +78,45 @@ char	**allocate_map(int rows, int cols)
 	return (map);
 }
 
-void	populate_map(int fd, char **map, int rows, int cols)
+int	populate_map(int fd, char **map, int rows, int cols)
 {
 	char	*line;
+	int		lines_read;
 	int		i;
 
 	line = NULL;
+	lines_read = 0;
 	i = 0;
 	while (i < rows)
 	{
 		line = get_next_line(fd);
 		if (!line)
+		{
+			ft_printf("Coudn't read line in populate_map()\n");
 			break ;
+		}
+		lines_read++;
 		ft_strncpy(map[i], line, cols);
 		map[i][cols] = '\0';
 		free(line);
 		i++;
 	}
+	return (lines_read);
 }
 
-char	**make_map(int fd, int *rows, int *cols)
+char	**make_map(int fd, t_map *grid, char *filename)
 {
 	int		fd2;
 	char	**map;
 
-	if (!count_lines_and_columns(fd, rows, cols))
+	if (!count_lines_and_columns(fd, grid))
 		return (NULL);
-	map = allocate_map(*rows, *cols);
+	map = allocate_map(grid->rows, grid->cols);
 	if (!map)
 		return (NULL);
-	// find a solution to opening this shit
-	fd2 = open("map.ber", O_RDONLY);
-	populate_map(fd2, map, *rows, *cols);
+	fd2 = open(filename, O_RDONLY);
+	if (populate_map(fd2, map, grid->rows, grid->cols) != grid->rows)
+		return (NULL);
 	close(fd2);
 	return (map);
 }

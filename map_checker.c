@@ -26,7 +26,7 @@ int	error_handling(t_vars *vars)
 	}
 	if (vars->coin < 1)
 	{
-		ft_printf("Error: Map must contain >= 1 C. Found: %d\n", vars->coin);
+		ft_printf("Error: Map must contain >= one C. Found: %d\n", vars->coin);
 		return (0);
 	}
 	return (1);
@@ -46,7 +46,7 @@ void	update_stats(char cell, int i, int j, t_vars *variables)
 		variables->coin++;
 }
 
-void	some(char **map, t_vars *vars, int rows, int cols)
+void	check_cells(char **map, t_vars *vars, int rows, int cols)
 {
 	int		i;
 	int		j;
@@ -94,17 +94,14 @@ int	check_boundries(int rows, int cols, char **map)
 	return (1);
 }
 
-int	is_map_valid(char **map, int rows, int cols, t_vars *var)
+int	is_map_valid(char **map, t_map *grid, t_vars *var, char *filename)
 {
-	if (check_boundries(rows, cols, map) == 0)
+	if (check_boundries(grid->rows, grid->cols, map) == 0)
 		return (0);
-	some(map, var, rows, cols);
+	check_cells(map, var, grid->rows, grid->cols);
 	if (error_handling(var) == 0)
 		return (0);
-	if (all_is_reachable(var->p_pos[0], var->p_pos[1], rows, cols) == 0)
-	{
-		ft_printf("exit/coin aint reachable!\n");
+	if (all_is_reachable(var->p_pos[0], var->p_pos[1], grid, filename) == 0)
 		return (0);
-	}
 	return (1);
 }

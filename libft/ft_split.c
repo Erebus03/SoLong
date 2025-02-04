@@ -25,10 +25,8 @@ static char	**clean(char **cells)
 
 static char	**allocate_and_fill(char **cells, const char *s, int len, int k)
 {
-	int	i;
 	int	j;
 
-	i = 0;
 	j = 0;
 	cells[k] = (char *)malloc((len + 1) * sizeof(char));
 	if (!cells[k])

@@ -11,9 +11,8 @@
 /* ************************************************************************** */
 
 #include "solong.h"
-#include <fcntl.h>
 
-int	check_reachability(char **map, int *rows, int *cols)
+int	check_reachability(char **map, t_map *grid)
 {
 	int	i;
 	int	j;
@@ -21,14 +20,14 @@ int	check_reachability(char **map, int *rows, int *cols)
 
 	i = 0;
 	return_value = 1;
-	while (i < *rows)
+	while (i < grid->rows)
 	{
 		j = 0;
-		while (j < *cols)
+		while (j < grid->cols)
 		{
 			if (map[i][j] == 'C' || map[i][j] == 'E')
 			{
-				ft_printf("Position(%d, %d) is not reachable\n", i, j);
+				printf("\nPosition(%d, %d)[%c] is not reachable\n", i, j, map[i][j]);
 				return_value = 0;
 			}
 			j++;
@@ -38,29 +37,31 @@ int	check_reachability(char **map, int *rows, int *cols)
 	return (return_value);
 }
 
-void	flood_fill(char **map, int x, int y)
+void	flood_fill(t_map *grid, char **map, int x, int y)
 {
-	if (x < 0 || x >= 10 || y < 0 || y >= 5)
+	if (x < 0 || x >= grid->cols || y < 0 || y >= grid->rows)
 		return ;
 	if (map[y][x] == '1' || map[y][x] == 'V')
 		return ;
 	map[y][x] = 'V';
-	flood_fill(map, x - 1, y);
-	flood_fill(map, x + 1, y);
-	flood_fill(map, x, y + 1);
-	flood_fill(map, x, y - 1);
+	flood_fill(grid, map, x - 1, y);
+	flood_fill(grid, map, x + 1, y);
+	flood_fill(grid, map, x, y + 1);
+	flood_fill(grid, map, x, y - 1);
 }
 
-int	all_is_reachable(int x, int y, int rows, int cols)
+int	all_is_reachable(int x, int y, t_map *grid, char *filename)
 {
 	int		fd;
 	char	**map_copy;
 	int		ret;
 
-	fd = open("map.ber", O_RDONLY);
-	map_copy = make_map(fd, &rows, &cols);
-	flood_fill(map_copy, x, y);
-	ret = check_reachability(map_copy, &rows, &cols);
-	free_map(map_copy, rows);
+	fd = open(filename, O_RDONLY);
+	map_copy = make_map(fd, grid, filename);
+	flood_fill(grid, map_copy, x, y);
+	for(int i = 0; i < grid->rows; i++)
+		printf("%s\n", map_copy[i]);
+	ret = check_reachability(map_copy, grid);
+	free_map(map_copy, grid->rows);
 	return (ret);
 }
