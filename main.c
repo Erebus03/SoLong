@@ -23,7 +23,11 @@ void    cleanup(t_game_info *game)
     if (game->var)
         free(game->var);
     if (game->fd > 0)
+	{
         close(game->fd);
+	}
+	if(game->imgs)
+		free(game->imgs);
     free(game);
 }
 
@@ -101,7 +105,7 @@ int	main(int ac, char **av)
         ft_printf("Error\nMemory allocation failed for game\n");
         return (1);
     }
-    *ginfo = (t_game_info){NULL, NULL, NULL, -1, NULL, NULL};
+    *ginfo = (t_game_info){NULL, NULL, NULL, NULL, -1, NULL, NULL};
 	if (!check_args(ac, av, ginfo))
 	{
 		cleanup(ginfo);

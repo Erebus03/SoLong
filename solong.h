@@ -13,7 +13,7 @@
 #ifndef SOLONG_H
 # define SOLONG_H
 
-# include "minilibx-linux/mlx.h"
+# include "../minilibx-linux/mlx.h" //change this
 # include "gnl/get_next_line.h"
 # include "ft_printf/ft_printf.h"
 # include "libft/libft.h"
@@ -32,6 +32,17 @@ typedef struct s_vars
 	int		coin;
 }	t_vars;
 
+typedef struct s_img
+{
+	void		*wall;
+	void		*p_up[3];
+	void		*p_down[3];
+	void		*p_right[3];
+	void		*p_left[3];
+	void		*coin[2];
+	void		*exit;
+}	t_img;
+
 typedef struct s_map
 {
 	int		rows;
@@ -43,6 +54,7 @@ typedef struct s_game
     char    **map;
     t_map   *grid;
     t_vars  *var;
+	t_img	*imgs;
     int     fd;
 	void	*mlx;
 	void	*win;
