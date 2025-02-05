@@ -11,29 +11,78 @@
 /* ************************************************************************** */
 
 #include "solong.h"
-#include <fcntl.h>
 
-/*
-	check file name and all that
-	check map and stuff
-	start rendering
-*/
-int	check_file_name(char *filename)
+void    cleanup(t_game_info *game)
 {
-	char	*ext;
+    if (!game)
+        return ;
+    if (game->map)
+        free_map(game->map, game->grid->rows);
+    if (game->grid)
+        free(game->grid);
+    if (game->var)
+        free(game->var);
+    if (game->fd > 0)
+        close(game->fd);
+    free(game);
+}
 
-	ext = ".ber";
-	if (ft_strncmp((filename + (ft_strlen(filename) - 4)), ext, 4) != 0)
+int	check_args(int ac, char **av, t_game_info *game)
+{
+	if (ac != 2)
+	{
+		ft_printf("Valid args: %s <map file name>\n", av[0]);
+		return (0);
+	}
+	if (ft_strncmp((av[1] + (ft_strlen(av[1]) - 4)), ".ber", 4) != 0)
 	{
 		ft_printf("File is not .ber\n");
 		return (0);
 	}
-	if (filename[0] == '.' && ft_strncmp(filename, ".ber", 4) != 0)
+	if (av[1][0] == '.' && ft_strncmp(av[1], ".ber", 4) != 0)
 	{
 		ft_printf("Hidden file\n");
 		return (0);
 	}
+	game->fd = open(av[1], O_RDONLY);
+	if (game->fd == -1)
+	{
+		perror("Error: Failed to open file");
+		return (0);
+	}
 	return (1);
+}
+
+int	init_game(t_game_info *game, char *filename)
+{
+	game->var = malloc(sizeof(t_vars));
+	if (!game->var)
+    {
+        ft_printf("Error: Memory allocation failed for vars\n");
+        return (0);
+    }
+	game->grid = malloc(sizeof(t_map));
+    if (!game->grid)
+    {
+        ft_printf("Error: Memory allocation failed for grid\n");
+        free(game->var);
+        game->var = NULL;
+        return (0);
+    }
+    *(game->var) = (t_vars){{0, 0}, 0, 0, 0};
+    *(game->grid) = (t_map){0, 0};
+    game->map = make_map(game->fd, game->grid, filename);
+    if (!game->map)
+    {
+        ft_printf("Error: Failed to create map\n");
+        return (0);
+    }
+    if (!is_map_valid(game->map, game->grid, game->var, filename))
+    {
+        ft_printf("Error: Invalid ma\n");
+        return (0);
+    }
+    return (1);
 }
 
 void	render_map(void)
@@ -43,56 +92,27 @@ void	render_map(void)
 
 int	main(int ac, char **av)
 {
-	char	**map;
-	t_vars	*var;
-	t_map	*grid;
-	int		fd;
-	int		valid_map;
+	t_game_info	*ginfo;
 
-	if (ac != 2)
+	ginfo = malloc(sizeof(t_game_info));
+    if (!ginfo)
+    {
+        ft_printf("Error: Memory allocation failed for game\n");
+        return (1);
+    }
+	if (!check_args(ac, av, ginfo))
 	{
-		ft_printf("Valid args: %s <map file name>\n", av[0]);
-		exit(1);
-	}
-	if (!check_file_name(av[1]))
-		return (1);
-	fd = open(av[1], O_RDONLY);
-	if (fd == -1)
-	{
-		perror("Open() error");
-		exit (1);
-	}
-	var = malloc(sizeof(t_vars));
-	grid = malloc(sizeof(t_map));
-	if (!var || !grid)
-	{
-		ft_printf("Memory allocation failed for variables or grid!");
-		free(var);
-		free(grid);
+		cleanup(ginfo);
 		return (1);
 	}
-	*var = (t_vars){{0, 0}, 0, 0, 0};
-	*grid = (t_map){0, 0};
-	map = make_map(fd, grid, av[1]);
-	if (!map)
+    *ginfo = (t_game_info){NULL, NULL, NULL, -1};
+	if(!init_game(ginfo, av[1]))
 	{
-		ft_printf("Failed to translate map.\n");
-		free(var);
-		free(grid);
-		close(fd);
+		cleanup(ginfo);
 		return (1);
 	}
-	printf("Map (rows: %d, cols: %d):\n", grid->rows, grid->cols);
-	valid_map = is_map_valid(map, grid, var, av[1]);
-	if (valid_map == 0)
-	{
-		printf("Map not valid!");
-		free_map(map, grid->rows);
-		free(grid);
-		free(var);
-		close(fd);
-	}
-	else
-		render_map();
+
+	render_map();
+	cleanup(ginfo);
 	return (0);
 }

@@ -27,19 +27,27 @@
 # define WIDTH 500
 # define HEIGHT 500
 
-typedef struct vars
+typedef struct s_vars
 {
-	int	p_pos[2];
-	int	player;
-	int	exit;
-	int	coin;
+	int		p_pos[2];
+	int		player;
+	int		exit;
+	int		coin;
 }	t_vars;
 
-typedef struct map
+typedef struct s_map
 {
 	int		rows;
 	int		cols;
 }	t_map;
+
+typedef struct s_game
+{
+    char    **map;
+    t_map   *grid;
+    t_vars  *var;
+    int     fd;
+}   t_game_info;
 
 /* floodfill funcs */
 void	flood_fill(t_map *grid, char **map, int x, int y);
@@ -71,7 +79,11 @@ int		populate_map(int fd, char **map, int rows, int cols);
 
 char	**make_map(int fd, t_map *grid, char *filename);
 
-/* extern funcs */
-char	*get_next_line(int fd);
+/* main */
+int	init_game(t_game_info *game, char *filename);
+
+int	check_args(int ac, char **av, t_game_info *game);
+
+void    cleanup(t_game_info *game);
 
 #endif

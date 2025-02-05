@@ -42,9 +42,9 @@ void	flood_fill(t_map *grid, char **map, int x, int y)
 {
 	if (x < 0 || x >= grid->cols || y < 0 || y >= grid->rows)
 		return ;
-	if (map[y][x] == '1' || map[y][x] == '*')
+	if (map[y][x] == '1' || map[y][x] == 'V')
 		return ;
-	map[y][x] = '*';
+	map[y][x] = 'V';
 	flood_fill(grid, map, x - 1, y);
 	flood_fill(grid, map, x + 1, y);
 	flood_fill(grid, map, x, y + 1);
