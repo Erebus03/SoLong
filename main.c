@@ -6,7 +6,7 @@
 /*   By: araji <araji@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 23:22:47 by araji             #+#    #+#             */
-/*   Updated: 2025/02/04 06:32:52 by araji            ###   ########.fr       */
+/*   Updated: 2025/02/05 02:31:09 by araji            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,12 @@ int	check_args(int ac, char **av, t_game_info *game)
 	}
 	if (ft_strncmp((av[1] + (ft_strlen(av[1]) - 4)), ".ber", 4) != 0)
 	{
-		ft_printf("File is not .ber\n");
+		ft_printf("Error: File must end with .ber\n");
 		return (0);
 	}
 	if (av[1][0] == '.' && ft_strncmp(av[1], ".ber", 4) != 0)
 	{
-		ft_printf("Hidden file\n");
+		ft_printf("Error: Hidden file not allowed\n");
 		return (0);
 	}
 	game->fd = open(av[1], O_RDONLY);
@@ -100,18 +100,17 @@ int	main(int ac, char **av)
         ft_printf("Error: Memory allocation failed for game\n");
         return (1);
     }
+    *ginfo = (t_game_info){NULL, NULL, NULL, -1};
 	if (!check_args(ac, av, ginfo))
 	{
 		cleanup(ginfo);
-		return (1);
+		return (1);;
 	}
-    *ginfo = (t_game_info){NULL, NULL, NULL, -1};
 	if(!init_game(ginfo, av[1]))
 	{
 		cleanup(ginfo);
 		return (1);
 	}
-
 	render_map();
 	cleanup(ginfo);
 	return (0);

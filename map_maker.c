@@ -6,7 +6,7 @@
 /*   By: araji <araji@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 23:22:35 by araji             #+#    #+#             */
-/*   Updated: 2025/02/04 06:39:24 by araji            ###   ########.fr       */
+/*   Updated: 2025/02/05 02:46:01 by araji            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ int	count_lines_and_columns(int fd, t_map *grid)
 
 	grid->rows = 0;
 	grid->cols = 0;
+
 	line = get_next_line(fd);
 	while (line != NULL)
 	{
