@@ -20,7 +20,7 @@ UTILS_SRCS = $(UTILS_DIR)ft_strncpy.c
 UTILS_OBJS = $(UTILS_SRCS:.c=.o)
 
 # Source files for so_long
-SRCS = main.c flood_fill.c map_checker.c map_maker.c
+SRCS = main.c flood_fill.c map_checker.c map_maker.c display.c
 OBJS = $(SRCS:.c=.o)
 
 # All object files combined
@@ -59,7 +59,7 @@ $(GNL_DIR)%.o: $(GNL_DIR)%.c
 
 # Compile so_long
 $(NAME): libs $(GNL) $(UTILS_OBJS) $(OBJS)
-	$(CC) $(ALL_OBJS) $(LIBS) -o $(NAME)
+	$(CC) $(ALL_OBJS) $(LIBS) -lmlx -lX11 -lXext -o $(NAME)
 
 # Compile main object files
 %.o: %.c

@@ -6,14 +6,14 @@
 /*   By: araji <araji@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 23:22:14 by araji             #+#    #+#             */
-/*   Updated: 2025/02/04 06:40:22 by araji            ###   ########.fr       */
+/*   Updated: 2025/02/05 10:29:23 by araji            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SOLONG_H
 # define SOLONG_H
 
-//#include "minilibx-linux/mlx.h"
+# include "minilibx-linux/mlx.h"
 # include "gnl/get_next_line.h"
 # include "ft_printf/ft_printf.h"
 # include "libft/libft.h"
@@ -23,9 +23,6 @@
 //#include <stdio.h>
 # include <stdlib.h>
 # include <fcntl.h>
-
-# define WIDTH 500
-# define HEIGHT 500
 
 typedef struct s_vars
 {
@@ -47,6 +44,8 @@ typedef struct s_game
     t_map   *grid;
     t_vars  *var;
     int     fd;
+	void	*mlx;
+	void	*win;
 }   t_game_info;
 
 /* floodfill funcs */
@@ -85,5 +84,11 @@ int	init_game(t_game_info *game, char *filename);
 int	check_args(int ac, char **av, t_game_info *game);
 
 void    cleanup(t_game_info *game);
+
+
+/* display.c*/
+void	win_init(t_game_info *game);
+
+void	render_map(t_game_info *game);
 
 #endif

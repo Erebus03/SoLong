@@ -6,7 +6,7 @@
 /*   By: araji <araji@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 23:22:47 by araji             #+#    #+#             */
-/*   Updated: 2025/02/05 02:31:09 by araji            ###   ########.fr       */
+/*   Updated: 2025/02/05 10:59:54 by araji            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,9 +85,10 @@ int	init_game(t_game_info *game, char *filename)
     return (1);
 }
 
-void	render_map(void)
+void	render_map(t_game_info *game)
 {
-	ft_printf("All good, get rendering..\n");
+	game->mlx = mlx_init();
+	win_init(game);
 }
 
 int	main(int ac, char **av)
@@ -97,21 +98,22 @@ int	main(int ac, char **av)
 	ginfo = malloc(sizeof(t_game_info));
     if (!ginfo)
     {
-        ft_printf("Error: Memory allocation failed for game\n");
+        ft_printf("Error\nMemory allocation failed for game\n");
         return (1);
     }
-    *ginfo = (t_game_info){NULL, NULL, NULL, -1};
+    *ginfo = (t_game_info){NULL, NULL, NULL, -1, NULL, NULL};
 	if (!check_args(ac, av, ginfo))
 	{
 		cleanup(ginfo);
-		return (1);;
+		return (1);
 	}
 	if(!init_game(ginfo, av[1]))
 	{
 		cleanup(ginfo);
 		return (1);
 	}
-	render_map();
+	render_map(ginfo);
+	mlx_loop(ginfo->mlx);
 	cleanup(ginfo);
 	return (0);
 }
