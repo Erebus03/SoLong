@@ -1,63 +1,56 @@
 #include "solong.h"
 
-void	put_image(t_game_info *game, char cell, int x,  int y)
+int	put_image(t_game_info *game, char cell, int x,  int y)
 {
+	int	ret;
+
+	ret = -2;
 	if (cell == '1')
-		mlx_put_image_to_window(game->mlx, game->win, game->imgs->wall, x, y);
+		ret =mlx_put_image_to_window(game->mlx, game->win, game->imgs->wall , x * 50, y * 50);
+	if (cell == '0')
+		ret = mlx_put_image_to_window(game->mlx, game->win, game->imgs->floor , x * 50, y * 50);
 	else if (cell == 'C')
-		mlx_put_image_to_window(game->mlx, game->win, game->imgs->coin, x, y);
+	{
+		ret = mlx_put_image_to_window(game->mlx, game->win, game->imgs->coin[0], x * 50, y * 50);
+		ret = mlx_put_image_to_window(game->mlx, game->win, game->imgs->coin[1], x * 50, y * 50);
+	}
+	else if (cell == 'O')
+	{
+		ret = mlx_put_image_to_window(game->mlx, game->win, game->imgs->coin[0], x * 50, y * 50);
+		ret = mlx_put_image_to_window(game->mlx, game->win, game->imgs->coin[1], x * 50, y * 50);
+	}
 	else if (cell == 'P')
-		mlx_put_image_to_window(game->mlx, game->win, game->imgs->p_left, x, y);
+	{
+		ret = mlx_put_image_to_window(game->mlx, game->win, game->imgs->p_left[0], x * 50, y * 50);
+	}
 	else if (cell == 'E')
-		mlx_put_image_to_window(game->mlx, game->win, game->imgs->exit, x, y);
+		ret = mlx_put_image_to_window(game->mlx, game->win, game->imgs->exit, x * 50, y * 50);
+	return ret;
 }
 
-void	get_imgs(t_img *img, void *mlxptr)
-{
-	int x;
-
-	/* wall */
-	img->wall = mlx_xpm_file_to_image(mlxptr, "pics/wall.xpm", &x, &x);
-	/* coin */
-	img->coin[0] = mlx_xpm_file_to_image(mlxptr, "pics/wall.xpm", &x, &x);
-	img->coin[1] = mlx_xpm_file_to_image(mlxptr, "pics/wall.xpm", &x, &x);
-	/* player */
-	img->p_up[0] = mlx_xpm_file_to_image(mlxptr, "pics/wall.xpm", &x, &x);
-	img->p_up[1] = mlx_xpm_file_to_image(mlxptr, "pics/wall.xpm", &x, &x);
-	img->p_up[2] = mlx_xpm_file_to_image(mlxptr, "pics/wall.xpm", &x, &x);
-	img->p_down[0] = mlx_xpm_file_to_image(mlxptr, "pics/wall.xpm", &x, &x);
-	img->p_down[1] = mlx_xpm_file_to_image(mlxptr, "pics/wall.xpm", &x, &x);
-	img->p_down[2] = mlx_xpm_file_to_image(mlxptr, "pics/wall.xpm", &x, &x);
-	img->p_right[0] = mlx_xpm_file_to_image(mlxptr, "pics/wall.xpm", &x, &x);
-	img->p_right[1] = mlx_xpm_file_to_image(mlxptr, "pics/wall.xpm", &x, &x);
-	img->p_right[2] = mlx_xpm_file_to_image(mlxptr, "pics/wall.xpm", &x, &x);
-	img->p_left[0] = mlx_xpm_file_to_image(mlxptr, "pics/wall.xpm", &x, &x);
-	img->p_left[1] = mlx_xpm_file_to_image(mlxptr, "pics/wall.xpm", &x, &x);
-	img->p_left[2] = mlx_xpm_file_to_image(mlxptr, "pics/wall.xpm", &x, &x);
-	/* exit */
-	img->exit = mlx_xpm_file_to_image(mlxptr, "pics/wall.xpm", &x, &x);
-}
-
-void	win_init(t_game_info *game)
+int	win_init(t_game_info *game)
 {
 	int	x;
 	int	y;
-	game->imgs = malloc(sizeof(t_img));
-	if (!game->imgs)
-	{
-		ft_printf("Error:\nAllocation failed for t_imgs\n");
-		return ;
-	}
-	get_imgs(game->imgs, game->mlx);
-	game->win = mlx_new_window(game->mlx, game->grid->cols * 50, game->grid->rows * 50, "window");
 
+	if (!assigne_images(game->imgs, game->mlx))
+	{
+		ft_printf("Error\nCouldn't assigne images!\n");
+		return (0);
+	}
+	game->win = mlx_new_window(game->mlx, game->grid->cols * 50, game->grid->rows * 50, "window");
 	x = 0;
-	while(x < game->grid->cols)
+	while(x < game->grid->rows)
 	{
 		y = 0;
-		while(y < game->grid->rows)
+		while(y < game->grid->cols)
 		{
-			put_image(game, game->map[y][x], x, y);
+			// ft_printf("+++  >%d< +++\n", put_image(game, game->map[y][x], x, y));
+			if (put_image(game, game->map[y][x], x, y) == -2)
+				return 0;
+			y++;
 		}
+		x++;
 	}
+	return (1);
 }
