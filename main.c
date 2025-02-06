@@ -12,23 +12,23 @@
 
 #include "solong.h"
 
-void    cleanup(t_game_info *game)
+void	cleanup(t_game_info *game)
 {
-    if (!game)
-        return ;
-    if (game->map)
-        free_map(game->map, game->grid->rows);
-    if (game->grid)
-        free(game->grid);
-    if (game->var)
-        free(game->var);
-    if (game->fd > 0)
+	if (!game)
+		return ;
+	if (game->map)
+		free_map(game->map, game->grid->rows);
+	if (game->grid)
+		free(game->grid);
+	if (game->var)
+		free(game->var);
+	if (game->fd > 0)
 	{
-        close(game->fd);
+		close(game->fd);
 	}
-	if(game->imgs)
+	if (game->imgs)
 		free(game->imgs);
-    free(game);
+	free(game);
 }
 
 int	check_args(int ac, char **av, t_game_info *game)
@@ -60,69 +60,60 @@ int	check_args(int ac, char **av, t_game_info *game)
 int	init_game(t_game_info *game, char *filename)
 {
 	game->var = malloc(sizeof(t_vars));
-	if (!game->var)
-    {
-        ft_printf("Error: Memory allocation failed for vars\n");
-        return (0);
-    }
 	game->grid = malloc(sizeof(t_map));
-    if (!game->grid)
-    {
-        ft_printf("Error: Memory allocation failed for grid\n");
-        free(game->var);
-        game->var = NULL;
-        return (0);
-    }
-    *(game->var) = (t_vars){{0, 0}, 0, 0, 0};
-    *(game->grid) = (t_map){0, 0};
-    game->map = make_map(game->fd, game->grid, filename);
-    if (!game->map)
-    {
-        ft_printf("Error: Failed to create map\n");
-        return (0);
-    }
-    if (!is_map_valid(game->map, game->grid, game->var, filename))
-    {
-        ft_printf("Error: Invalid ma\n");
-        return (0);
-    }
-    return (1);
-}
-
-int	render_map(t_game_info *game)
-{
-	game->mlx = mlx_init();
-	printf("win-init\n");
-	if (!win_init(game))
+	if (!game->var || !game->grid)
 	{
-		printf("not init\n");
+		ft_printf("Error: Memory allocation failed for init_game()\n");
+		cleanup(game);
+		exit (1);
+	}
+	*(game->var) = (t_vars){{0, 0}, 0, 0, 0};
+	*(game->grid) = (t_map){0, 0};
+	game->map = make_map(game->fd, game->grid, filename);
+	if (!game->map)
+	{
+		ft_printf("Error: Failed to create map\n");
 		return (0);
 	}
+	if (!is_map_valid(game->map, game->grid, game->var, filename))
+	{
+		ft_printf("Error: Invalid ma\n");
+		return (0);
+	}
+	return (1);
+}
+
+int	render_map(t_game_info *game, t_paths *paths)
+{
+	game->mlx = mlx_init();
+	if (!win_init(game, &paths))
+		return (0);
 	return (1);
 }
 
 int	main(int ac, char **av)
 {
 	t_game_info	*ginfo;
+	t_paths		paths;
 
 	ginfo = malloc(sizeof(t_game_info));
-    if (!ginfo)
-    {
-        ft_printf("Error\nMemory allocation failed for game\n");
-        return (1);
-    }
-    *ginfo = (t_game_info){NULL, NULL, NULL, NULL, -1, NULL, NULL};
+	if (!ginfo)
+	{
+		ft_printf("Error\nMemory allocation failed for game\n");
+		return (1);
+	}
+	*ginfo = (t_game_info){NULL, NULL, NULL, NULL, -1, NULL, NULL};
 	if (!check_args(ac, av, ginfo))
 	{
 		cleanup(ginfo);
 		return (1);
 	}
-	if(!init_game(ginfo, av[1]))
+	if (!init_game(ginfo, av[1]))
 	{
 		cleanup(ginfo);
 		return (1);
 	}
-	render_map(ginfo);
+	render_map(ginfo, &paths);
 	mlx_loop(ginfo->mlx);
 	cleanup(ginfo);
 	return (0);

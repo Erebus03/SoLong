@@ -31,7 +31,6 @@ int	count_lines_and_columns(int fd, t_map *grid)
 
 	grid->rows = 0;
 	grid->cols = 0;
-
 	line = get_next_line(fd);
 	while (line != NULL)
 	{
@@ -49,8 +48,7 @@ int	count_lines_and_columns(int fd, t_map *grid)
 		line = get_next_line(fd);
 	}
 	free(line);
-	// Valid rectangle, but NOT A SQUARE = remove'*rows != *cols'
-	return (grid->rows > 0 && grid->cols > 0 && grid->rows != grid->cols);
+	return (grid->rows > 0 && grid->cols > 0);
 }
 
 char	**allocate_map(int rows, int cols)

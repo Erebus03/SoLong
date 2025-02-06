@@ -60,8 +60,6 @@ int	all_is_reachable(int x, int y, t_map *grid, char *filename)
 	fd = open(filename, O_RDONLY);
 	map_copy = make_map(fd, grid, filename);
 	flood_fill(grid, map_copy, x, y);
-	for (int i = 0; i < grid->rows; i++)
-		printf("%s\n", map_copy[i]);
 	ret = check_reachability(map_copy, grid);
 	free_map(map_copy, grid->rows);
 	return (ret);

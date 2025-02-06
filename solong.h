@@ -13,16 +13,33 @@
 #ifndef SOLONG_H
 # define SOLONG_H
 
-# include "../minilibx-linux/mlx.h" //change this
+# ifndef TILE
+#  define TILE 50
+# endif
+
+# include "minilibx-linux/mlx.h"
 # include "gnl/get_next_line.h"
 # include "ft_printf/ft_printf.h"
 # include "libft/libft.h"
 # include "utils/utils.h"
-
 # include <string.h>
 //#include <stdio.h>
 # include <stdlib.h>
 # include <fcntl.h>
+
+typedef struct s_paths
+{
+	char	*floor;
+	char	*wall;
+	char	*exit;
+	char	*enemy[2];
+	char	*coin[2];
+	char	*attack[4];
+	char	*p_up[2];
+	char	*p_down[2];
+	char	*p_right[2];
+	char	*p_left[2];
+}	t_paths;
 
 typedef struct s_vars
 {
@@ -37,16 +54,13 @@ typedef struct s_img
 	void	*wall;
 	void	*floor;
 	void	*exit;
-
 	void	*enemy[2];
 	void	*coin[2];
-
 	void	*attack[4];
-
-	void	*p_up[3];
-	void	*p_down[3];
-	void	*p_right[3];
-	void	*p_left[3];
+	void	*p_up[2];
+	void	*p_down[2];
+	void	*p_right[2];
+	void	*p_left[2];
 
 }	t_img;
 
@@ -58,14 +72,14 @@ typedef struct s_map
 
 typedef struct s_game
 {
-    char    **map;
-    t_map   *grid;
-    t_vars  *var;
+	char	**map;
+	t_map	*grid;
+	t_vars	*var;
 	t_img	*imgs;
-    int     fd;
+	int		fd;
 	void	*mlx;
 	void	*win;
-}   t_game_info;
+}	t_game_info;
 
 /* floodfill funcs */
 void	flood_fill(t_map *grid, char **map, int x, int y);
@@ -92,20 +106,23 @@ int		init_game(t_game_info *game, char *filename);
 int		check_args(int ac, char **av, t_game_info *game);
 void	cleanup(t_game_info *game);
 
-
 /* display.c*/
-int		win_init(t_game_info *game);
-int		render_map(t_game_info *game);
+int		win_init(t_game_info *game, t_paths	**paths);
+int		render_map(t_game_info *game, t_paths *paths);
+int		play_game(t_game_info *g);
+void	assigne_paths(t_paths **p);
 
 /* load_images.c */
-int		assigne_images(t_img **imgs, void *mlx_ptr);
-int		assigne_enemy_and_attack(t_img *img, void *mlxptr, int k);
-int		assigne_player_positions(t_img *img, void *mlxptr, int k);
-int		assigne_other(t_img *img, void *mlxptr, int k);
-
+int		assigne_images(t_img **imgs, void *mlx_ptr, t_paths **paths);
+int		assigne_enemy_and_attack(t_img *img, void *mlxptr,
+			t_paths *path, int k);
+int		assigne_player_positions(t_img *img, void *mlxptr,
+			t_paths *path, int k);
+int		assigne_other(t_img *img, void *mlxptr, t_paths *path, int k);
 
 /* free_iamges */
 void	free_player(t_img *img);
 void	free_enemy_attack(t_img *img);
 void	free_c_w_f_e(t_img *img);
+
 #endif
