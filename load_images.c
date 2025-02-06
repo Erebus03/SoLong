@@ -118,6 +118,6 @@ int	assigne_images(t_img *imgs, void *mlx_ptr)
 	if (!assigne_enemy_and_attack(imgs, mlx_ptr, k))
 		return (0);
 	if (!assigne_other(imgs, mlx_ptr, k))
-		return (0);
+		return (0);		
 	return (1);
 }
