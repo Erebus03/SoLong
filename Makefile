@@ -65,6 +65,9 @@ $(NAME): libs $(GNL) $(UTILS_OBJS) $(OBJS)
 %.o: %.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
+testmap: libs
+	cc map_maker.c map_checker.c testmap.c flood_fill.c utils/ft_strncpy.c $(LIBS)  -o testmap
+
 clean:
 	$(RM) $(ALL_OBJS)
 	@make clean -C $(LIBFT_DIR)

@@ -1,4 +1,5 @@
 #include "solong.h"
+#define SLEEP (usleep(100000);)
 int	put_image(t_game_info *game, char cell, int x,  int y)
 {
 	int	ret;
@@ -9,28 +10,19 @@ int	put_image(t_game_info *game, char cell, int x,  int y)
 		return (0);
 	}
 	ret = 0;
-	printf("cell: %c\n", cell);
+	// printf("s cell: %c\n", cell);
 	if (cell == '1')
-	{
 		ret = mlx_put_image_to_window(game->mlx, game->win, game->imgs->wall , x * 50, y * 50);
-		printf("ret %d\n", ret);
-	}
 	if (cell == '0')
-		ret = mlx_put_image_to_window(game->mlx, game->win, game->imgs->floor , x * 50, y * 50);
+		ret =1;// mlx_put_image_to_window(game->mlx, game->win, game->imgs->floor , x * 50, y * 50);
 	else if (cell == 'C')
 	{
-		ret = mlx_put_image_to_window(game->mlx, game->win, game->imgs->coin[0], x * 50, y * 50);
-		ret = mlx_put_image_to_window(game->mlx, game->win, game->imgs->coin[1], x * 50, y * 50);
-	}
-	else if (cell == 'O')
-	{
+		ret = mlx_put_image_to_window(game->mlx, game->win, game->imgs->floor , x * 50, y * 50);
 		ret = mlx_put_image_to_window(game->mlx, game->win, game->imgs->coin[0], x * 50, y * 50);
 		ret = mlx_put_image_to_window(game->mlx, game->win, game->imgs->coin[1], x * 50, y * 50);
 	}
 	else if (cell == 'P')
-	{
 		ret = mlx_put_image_to_window(game->mlx, game->win, game->imgs->p_left[0], x * 50, y * 50);
-	}
 	else if (cell == 'E')
 		ret = mlx_put_image_to_window(game->mlx, game->win, game->imgs->exit, x * 50, y * 50);
 	return ret;
@@ -47,7 +39,29 @@ int	win_init(t_game_info *game)
 		return (0);
 	}
 	write(1, "check1\n", 7);
-		
+
+	game->win = mlx_new_window(game->mlx, game->grid->cols * 50, game->grid->rows * 50, "window");
+	if (game->win)
+		printf("game.win good\n");
+	while(1)
+	{
+		y = 0;
+		while(y < game->grid->rows)
+		{
+			x = 0;
+			while(x < game->grid->cols)
+			{
+				printf("x%d y%d\n", x, y);
+				put_image(game, game->map[y][x], x, y);// protect
+				usleep(1000);
+				x++;
+			}
+			y++;
+		}
+	}
+	return (1);
+}
+/*
 	if (1) {
 		write(1, "check\n", 6);
 		if (!game->imgs->wall)
@@ -94,21 +108,4 @@ int	win_init(t_game_info *game)
 				write(1, "img.wall\n", 9);
 		write(1, "checkf\n", 7);
 		}
-
-	game->win = mlx_new_window(game->mlx, game->grid->cols * 50, game->grid->rows * 50, "window");
-	if (game->win)
-		printf("game.win good\n");
-	x = 0;
-	while(x < game->grid->rows)
-	{
-		y = 0;
-		while(y < game->grid->cols)
-		{
-			if (!put_image(game, game->map[y][x], x, y))
-				return 0;
-			y++;
-		}
-		x++;
-	}
-	return (1);
-}
+*/
