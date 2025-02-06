@@ -17,7 +17,7 @@
 #  define TILE 50
 # endif
 
-# include "../minilibx-linux/mlx.h"
+# include "minilibx-linux/mlx.h"
 # include "gnl/get_next_line.h"
 # include "ft_printf/ft_printf.h"
 # include "libft/libft.h"
@@ -119,10 +119,10 @@ int		assigne_enemy_and_attack(t_img *img, void *mlxptr,
 int		assigne_player_positions(t_img *img, void *mlxptr,
 			t_paths *path, int k);
 int		assigne_other(t_img *img, void *mlxptr, t_paths *path, int k);
-
+void	free_images(t_img *img, void *mlx_ptr);
 /* free_iamges */
-void	free_player(t_img *img);
-void	free_enemy_attack(t_img *img);
-void	free_c_w_f_e(t_img *img);
+void	free_player(t_img *img, void *mlxptr);
+void	free_enemy_attack(t_img *img, void *mlxptr);
+void	free_c_w_f_e(t_img *img, void *mlxptr);
 
 #endif

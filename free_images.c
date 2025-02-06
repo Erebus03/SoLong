@@ -12,7 +12,7 @@
 
 #include "solong.h"
 
-void	free_player(t_img *img)
+void	free_player(t_img *img, void *mlxptr)
 {
 	int	i;
 	int	n_pics;
@@ -23,22 +23,22 @@ void	free_player(t_img *img)
 		return ;
 	while (++i < n_pics)
 		if (img->p_up[i])
-			free(img->p_up[i]);
+			mlx_destroy_image(img->p_up[i], mlxptr);
 	i = -1;
 	while (++i < n_pics)
 		if (img->p_down[i])
-			free(img->p_down[i]);
+			mlx_destroy_image(img->p_down[i], mlxptr);
 	i = -1;
 	while (++i < n_pics)
 		if (img->p_right[i])
-			free(img->p_right[i]);
+			mlx_destroy_image(img->p_right[i], mlxptr);
 	i = -1;
 	while (++i < n_pics)
 		if (img->p_left[i])
-			free(img->p_left[i]);
+			mlx_destroy_image(img->p_left[i], mlxptr);
 }
 
-void	free_enemy_attack(t_img *img)
+void	free_enemy_attack(t_img *img, void *mlxptr)
 {
 	int	i;
 	int	enemy_pics;
@@ -51,14 +51,14 @@ void	free_enemy_attack(t_img *img)
 	enemy_pics = 4;
 	while (++i < enemy_pics)
 		if (img->enemy[i])
-			free(img->enemy[i]);
+			mlx_destroy_image(img->enemy[i], mlxptr);
 	i = -1;
 	while (++i < attack_pics)
 		if (img->attack[i])
-			free(img->attack[i]);
+			mlx_destroy_image(img->attack[i], mlxptr);
 }
 
-void	free_c_w_f_e(t_img *img)
+void	free_c_w_f_e(t_img *img, void *mlxptr)
 {
 	int	i;
 	int	n_coin;
@@ -68,12 +68,12 @@ void	free_c_w_f_e(t_img *img)
 	i = -1;
 	n_coin = 2;
 	if (img->wall)
-		free(img->wall);
+		mlx_destroy_image(img->wall, mlxptr);
 	if (img->exit)
-		free(img->exit);
+		mlx_destroy_image(img->exit, mlxptr);
 	if (img->floor)
-		free(img->floor);
+		mlx_destroy_image(img->floor, mlxptr);
 	while (++i < n_coin)
 		if (img->coin[i])
-			free(img->coin[i]);
+			mlx_destroy_image(img->coin[i], mlxptr);
 }
