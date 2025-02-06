@@ -16,9 +16,10 @@ void	free_images(t_img *img, void *mlxptr)
 {
 	if (img)
 	{
-		free_player(img, mlxptr);
-		free_enemy_attack(img, mlxptr);
-		free_c_w_f_e(img, mlxptr);
+		mlxptr = mlxptr;
+		// free_player(img, mlxptr);
+		// free_enemy_attack(img, mlxptr);
+		// free_c_w_f_e(img, mlxptr);
 	}
 	return ;
 }
