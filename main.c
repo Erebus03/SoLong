@@ -92,8 +92,12 @@ int	init_game(t_game_info *game, char *filename)
 int	render_map(t_game_info *game)
 {
 	game->mlx = mlx_init();
+	printf("win-init\n");
 	if (!win_init(game))
+	{
+		printf("not init\n");
 		return (0);
+	}
 	return (1);
 }
 

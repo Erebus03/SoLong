@@ -4,6 +4,7 @@ void free_images(t_img *img)
 {
 	if (img)
 	{
+		write(1, "freeing..\n", 10);
 		free_player(img);
 		free_enemy_attack(img);
 		free_c_w_f_e(img);
@@ -102,22 +103,24 @@ int	assigne_enemy_and_attack(t_img *img, void *mlxptr, int k)
 	return (1);
 }
 
-int	assigne_images(t_img *imgs, void *mlx_ptr)
+int	assigne_images(t_img **imgs, void *mlx_ptr)
 {
 	int k;
 
 	k = 0;
-	imgs = malloc(sizeof(t_img));
-	if (!imgs)
+	*imgs = malloc(sizeof(t_img));
+	write(1, "img allocated\n", 14);
+	if (!*imgs)
 	{
 		ft_printf("Error:\nAllocation failed for t_imgs\n");
 		return (0);
 	}
-	if (!assigne_player_positions(imgs, mlx_ptr, k))
+	if (!assigne_player_positions(*imgs, mlx_ptr, k))
 		return (0);
-	if (!assigne_enemy_and_attack(imgs, mlx_ptr, k))
+	if (!assigne_enemy_and_attack(*imgs, mlx_ptr, k))
 		return (0);
-	if (!assigne_other(imgs, mlx_ptr, k))
-		return (0);		
+	if (!assigne_other(*imgs, mlx_ptr, k))
+		return (0);
+	write(1, "imgs assigned\n", 14);	
 	return (1);
 }

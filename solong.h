@@ -13,7 +13,7 @@
 #ifndef SOLONG_H
 # define SOLONG_H
 
-# include "../minilibx-linux/mlx.h" //change this
+# include "minilibx-linux/mlx.h" //change this
 # include "gnl/get_next_line.h"
 # include "ft_printf/ft_printf.h"
 # include "libft/libft.h"
@@ -98,7 +98,7 @@ int		win_init(t_game_info *game);
 int		render_map(t_game_info *game);
 
 /* load_images.c */
-int		assigne_images(t_img *imgs, void *mlx_ptr);
+int		assigne_images(t_img **imgs, void *mlx_ptr);
 int		assigne_enemy_and_attack(t_img *img, void *mlxptr, int k);
 int		assigne_player_positions(t_img *img, void *mlxptr, int k);
 int		assigne_other(t_img *img, void *mlxptr, int k);
