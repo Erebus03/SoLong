@@ -13,7 +13,7 @@
 #ifndef SOLONG_H
 # define SOLONG_H
 
-# include "minilibx-linux/mlx.h" //change this
+# include "../minilibx-linux/mlx.h" //change this
 # include "gnl/get_next_line.h"
 # include "ft_printf/ft_printf.h"
 # include "libft/libft.h"
@@ -36,8 +36,10 @@ typedef struct s_img
 {
 	void	*wall;
 	void	*floor;
+	void	*exit;
 
 	void	*enemy[2];
+	void	*coin[2];
 
 	void	*attack[4];
 
@@ -46,8 +48,6 @@ typedef struct s_img
 	void	*p_right[3];
 	void	*p_left[3];
 
-	void	*coin[2];
-	void	*exit;
 }	t_img;
 
 typedef struct s_map
@@ -103,4 +103,9 @@ int		assigne_enemy_and_attack(t_img *img, void *mlxptr, int k);
 int		assigne_player_positions(t_img *img, void *mlxptr, int k);
 int		assigne_other(t_img *img, void *mlxptr, int k);
 
+
+/* free_iamges */
+void	free_player(t_img *img);
+void	free_enemy_attack(t_img *img);
+void	free_c_w_f_e(t_img *img);
 #endif

@@ -20,7 +20,7 @@ UTILS_SRCS = $(UTILS_DIR)ft_strncpy.c
 UTILS_OBJS = $(UTILS_SRCS:.c=.o)
 
 # Source files for so_long
-SRCS = main.c flood_fill.c map_checker.c map_maker.c display.c
+SRCS = main.c flood_fill.c map_checker.c map_maker.c display.c load_images.c free_images.c
 OBJS = $(SRCS:.c=.o)
 
 # All object files combined

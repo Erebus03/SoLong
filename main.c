@@ -89,10 +89,12 @@ int	init_game(t_game_info *game, char *filename)
     return (1);
 }
 
-void	render_map(t_game_info *game)
+int	render_map(t_game_info *game)
 {
 	game->mlx = mlx_init();
-	win_init(game);
+	if (!win_init(game))
+		return (0);
+	return (1);
 }
 
 int	main(int ac, char **av)

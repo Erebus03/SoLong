@@ -2,6 +2,12 @@
 
 void free_images(t_img *img)
 {
+	if (img)
+	{
+		free_player(img);
+		free_enemy_attack(img);
+		free_c_w_f_e(img);
+	}
 	return ;
 }
 
@@ -9,17 +15,29 @@ int	assigne_other(t_img *img, void *mlxptr, int k)
 {
 	img->wall = mlx_xpm_file_to_image(mlxptr, "pics/wall.xpm", &k, &k);
 	if (!img->wall)
+	{
+		free_images(img);
 		return (0);
+	}
 	img->floor = mlx_xpm_file_to_image(mlxptr, "pics/floor.xpm", &k, &k);
 	if (!img->floor)
+	{
+		free_images(img);
 		return (0);
+	}
 	img->exit = mlx_xpm_file_to_image(mlxptr, "pics/wall.xpm", &k, &k); //download exit
 	if (!img->exit)
+	{
+		free_images(img);
 		return (0);
+	}
 	img->coin[0] = mlx_xpm_file_to_image(mlxptr, "pics/sheep/sheep1.xpm", &k, &k);
-	if (!img->coin[0])
-		return (0);
 	img->coin[1] = mlx_xpm_file_to_image(mlxptr, "pics/sheep/sheep1.xpm", &k, &k); //sheep2
+	if (!img->coin[0] || !img->coin[1])
+	{
+		free_images(img);
+		return (0);
+	}
 	return (1);
 }
 
@@ -27,20 +45,29 @@ int	assigne_player_positions(t_img *img, void *mlxptr, int k)
 {
 	/* player */
 	img->p_up[0] = mlx_xpm_file_to_image(mlxptr, "pics/monster/monster1.xpm", &k, &k);
-	if (!img->p_up[0])
-		return (0);
 	img->p_up[1] = mlx_xpm_file_to_image(mlxptr, "pics/monster/monster1.xpm", &k, &k);
 	img->p_up[2] = mlx_xpm_file_to_image(mlxptr, "pics/monster/monster1.xpm", &k, &k);
-	img->p_down[0] = mlx_xpm_file_to_image(mlxptr, "pics/monster/monster1.xpm", &k, &k);
-	if (!img->p_down[0])
+	if (!img->p_up[0] || !img->p_up[1] || !img->p_up[2])
+	{
+		free_images(img);
 		return (0);
+	}
+	img->p_down[0] = mlx_xpm_file_to_image(mlxptr, "pics/monster/monster1.xpm", &k, &k);
 	img->p_down[1] = mlx_xpm_file_to_image(mlxptr, "pics/monster/monster1.xpm", &k, &k);
 	img->p_down[2] = mlx_xpm_file_to_image(mlxptr, "pics/monster/monster1.xpm", &k, &k);
-	img->p_right[0] = mlx_xpm_file_to_image(mlxptr, "pics/monster/monster1.xpm", &k, &k);
-	if (!img->p_right[0])
+	if (!img->p_down[0] || !img->p_down[1]  || !img->p_down[2])
+	{
+		free_images(img);
 		return (0);
+	}
+	img->p_right[0] = mlx_xpm_file_to_image(mlxptr, "pics/monster/monster1.xpm", &k, &k);
 	img->p_right[1] = mlx_xpm_file_to_image(mlxptr, "pics/monster/monster1.xpm", &k, &k);
 	img->p_right[2] = mlx_xpm_file_to_image(mlxptr, "pics/monster/monster1.xpm", &k, &k);
+	if (!img->p_right[0] || !img->p_right[1] || !img->p_right[2])
+	{
+		free_images(img);
+		return (0);
+	}
 	img->p_left[0] = mlx_xpm_file_to_image(mlxptr, "pics/monster/monster1.xpm", &k, &k);
 	img->p_left[1] = mlx_xpm_file_to_image(mlxptr, "pics/monster/monster1.xpm", &k, &k);
 	img->p_left[2] = mlx_xpm_file_to_image(mlxptr, "pics/monster/monster1.xpm", &k, &k);
@@ -58,7 +85,10 @@ int	assigne_enemy_and_attack(t_img *img, void *mlxptr, int k)
 	img->enemy[0] = mlx_xpm_file_to_image(mlxptr, "pics/enemy/enemy1.xpm", &k, &k);
 	img->enemy[1] = mlx_xpm_file_to_image(mlxptr, "pics/enemy/enemy2.xpm", &k, &k);
 	if (!img->enemy[0] || !img->enemy[1])
+	{
+		free_images(img);
 		return (0);
+	}
 	/* attack */
 	img->attack[0] = mlx_xpm_file_to_image(mlxptr, "pics/attack/attack1.xpm", &k, &k);
 	img->attack[1] = mlx_xpm_file_to_image(mlxptr, "pics/attack/attack2.xpm", &k, &k);
