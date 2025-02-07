@@ -24,17 +24,16 @@ int	put_image(t_game_info *g, char cell, int x, int y)
 		ret = mlx_put_image_to_window(g->mlx, g->win, g->imgs->wall,
 				x * TILE, y * TILE);
 	else if (cell == 'C')
-	{
 		ret = mlx_put_image_to_window(g->mlx, g->win, g->imgs->coin[0],
 				x * TILE, y * TILE);
-		ret = mlx_put_image_to_window(g->mlx, g->win, g->imgs->coin[1],
-				x * TILE, y * TILE);
-	}
 	else if (cell == 'P')
 		ret = mlx_put_image_to_window(g->mlx, g->win, g->imgs->p_left[0],
 				x * TILE, y * TILE);
 	else if (cell == 'E')
 		ret = mlx_put_image_to_window(g->mlx, g->win, g->imgs->exit,
+				x * TILE, y * TILE);
+	else if (cell == 'N')
+		ret = mlx_put_image_to_window(g->mlx, g->win, g->imgs->enemy[0],
 				x * TILE, y * TILE);
 	return (ret);
 }
@@ -61,11 +60,13 @@ int	play_game(t_game_info *g)
 
 void	assigne_paths(t_paths **p)
 {
-	(*p)->floor = "pics/floor.xpm";
 	(*p)->wall = "pics/wall.xpm";
+	(*p)->floor = "pics/floor.xpm";
 	(*p)->exit = "pics/wall.xpm";
 	(*p)->enemy[0] = "pics/enemy/enemy1.xpm";
 	(*p)->enemy[1] = "pics/enemy/enemy1.xpm";
+	(*p)->coin[0] = "pics/sheep/sheep1.xpm";
+	(*p)->coin[1] = "pics/sheep/sheep1.xpm";
 	(*p)->attack[0] = "pics/attack/attack1.xpm";
 	(*p)->attack[1] = "pics/attack/attack2.xpm";
 	(*p)->attack[2] = "pics/attack/attack3.xpm";

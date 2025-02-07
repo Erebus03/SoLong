@@ -45,6 +45,7 @@ typedef struct s_vars
 {
 	int		p_pos[2];
 	int		player;
+	int		enemy;
 	int		exit;
 	int		coin;
 }	t_vars;

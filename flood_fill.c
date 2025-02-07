@@ -27,7 +27,7 @@ int	check_reachability(char **map, t_map *grid)
 		{
 			if (map[i][j] == 'C' || map[i][j] == 'E')
 			{
-				printf("\nPosition(%d, %d)[%c] is not reachable\n",
+				printf("Error\nPosition(%d, %d)[%c] is not reachable\n",
 					i, j, map[i][j]);
 				return_value = 0;
 			}

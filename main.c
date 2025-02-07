@@ -35,23 +35,23 @@ int	check_args(int ac, char **av, t_game_info *game)
 {
 	if (ac != 2)
 	{
-		ft_printf("Valid args: %s <map file name>\n", av[0]);
+		ft_printf("Error\nValid args: %s <map file name>\n", av[0]);
 		return (0);
 	}
 	if (ft_strncmp((av[1] + (ft_strlen(av[1]) - 4)), ".ber", 4) != 0)
 	{
-		ft_printf("Error: File must end with .ber\n");
+		ft_printf("Error\nFile must end with .ber\n");
 		return (0);
 	}
 	if (av[1][0] == '.' && ft_strncmp(av[1], ".ber", 4) != 0)
 	{
-		ft_printf("Error: Hidden file not allowed\n");
+		ft_printf("Error\nHidden file not allowed\n");
 		return (0);
 	}
 	game->fd = open(av[1], O_RDONLY);
 	if (game->fd == -1)
 	{
-		perror("Error: Failed to open file");
+		perror("Error\nFailed to open file");
 		return (0);
 	}
 	return (1);
@@ -63,21 +63,21 @@ int	init_game(t_game_info *game, char *filename)
 	game->grid = malloc(sizeof(t_map));
 	if (!game->var || !game->grid)
 	{
-		ft_printf("Error: Memory allocation failed for init_game()\n");
+		ft_printf("Error\nMemory allocation failed for init_game()\n");
 		cleanup(game);
 		exit (1);
 	}
-	*(game->var) = (t_vars){{0, 0}, 0, 0, 0};
+	*(game->var) = (t_vars){{0, 0}, 0, 0, 0, 0};
 	*(game->grid) = (t_map){0, 0};
 	game->map = make_map(game->fd, game->grid, filename);
 	if (!game->map)
 	{
-		ft_printf("Error: Failed to create map\n");
+		ft_printf("Error\nFailed to create map\n");
 		return (0);
 	}
 	if (!is_map_valid(game->map, game->grid, game->var, filename))
 	{
-		ft_printf("Error: Invalid ma\n");
+		ft_printf("Error\nInvalid ma\n");
 		return (0);
 	}
 	return (1);
