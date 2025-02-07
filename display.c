@@ -70,6 +70,6 @@ int	win_init(t_game_info *game, t_paths **path)
 	}
 	game->win = mlx_new_window(game->mlx, game->grid->cols * TILE,
 			game->grid->rows * TILE, "Soolowng");
-	mlx_loop_hook(ginfo->mlx, loop_init, ginfo);
+	mlx_loop_hook(game->mlx, loop_init, game);
 	return (1);
 }
