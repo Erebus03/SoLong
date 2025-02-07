@@ -51,7 +51,8 @@ int	check_args(int ac, char **av, t_game_info *game)
 		ft_printf("Error\nFile must end with .ber\n");
 		return (0);
 	}
-	if (av[1][0] == '.' && ft_strncmp(av[1], ".ber", 4) != 0)
+	if (av[1][0] == '.' && av[1][1] != '.' &&
+		av[1][0] != '/' && ft_strncmp(av[1], ".ber", 4) != 0)
 	{
 		ft_printf("Error\nHidden file not allowed\n");
 		return (0);

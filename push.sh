@@ -13,7 +13,6 @@ commit_message="$1"
 # Syncing steps
 git add .
 git commit -m "$commit_message"
-git pull origin main --rebase
 git push origin main
 
 echo "Repository synced successfully!"

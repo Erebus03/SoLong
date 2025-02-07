@@ -18,12 +18,11 @@
 # endif
 
 # include "../minilibx-linux/mlx.h"
-# include "gnl/get_next_line.h"
 # include "ft_printf/ft_printf.h"
-# include "libft/libft.h"
 # include "utils/utils.h"
+# include "utils/get_next_line.h"
 # include <string.h>
-//#include <stdio.h>
+# include <stdio.h>
 # include <stdlib.h>
 # include <fcntl.h>
 
@@ -108,11 +107,11 @@ char	**make_map(int fd, t_map *grid, char *filename);
 int		init_game(t_game_info *game, char *filename);
 int		check_args(int ac, char **av, t_game_info *game);
 void	cleanup(t_game_info *game);
+int		render_map(t_game_info *game, t_paths *paths);
 
 /* display.c*/
 int		win_init(t_game_info *game, t_paths	**paths);
-int		render_map(t_game_info *game, t_paths *paths);
-int		play_game(t_game_info *g);
+int		put_image(t_game_info *g, char cell, int x, int y);
 void	assigne_paths(t_paths **p);
 
 /* load_images.c */

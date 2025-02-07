@@ -1,22 +1,16 @@
 NAME = so_long
 
 # Directory paths
-LIBFT_DIR = libft/
-GNL_DIR = gnl/
 PRINTF_DIR = ft_printf/
 UTILS_DIR = utils/
 
 # Library names
-LIBFT = $(LIBFT_DIR)libft.a
-GNL = $(GNL_DIR)libgnl.a
 PRINTF = $(PRINTF_DIR)libftprintf.a
-
-# GNL source files
-GNL_SRCS = $(GNL_DIR)get_next_line.c $(GNL_DIR)get_next_line_utils.c
-GNL_OBJS = $(GNL_SRCS:.c=.o)
+UTILS = $(UTILS_DIR)libutils.a
 
 # Utils source files
-UTILS_SRCS = $(UTILS_DIR)ft_strncpy.c
+UTILS_SRCS = utils/ft_strncpy.c utils/ft_strlen.c utils/ft_strncmp.c \
+				utils/get_next_line_utils.c utils/get_next_line.c
 UTILS_OBJS = $(UTILS_SRCS:.c=.o)
 
 # Source files for so_long
@@ -24,7 +18,7 @@ SRCS = main.c flood_fill.c map_checker.c map_maker.c display.c load_images.c fre
 OBJS = $(SRCS:.c=.o)
 
 # All object files combined
-ALL_OBJS = $(OBJS) $(GNL_OBJS) $(UTILS_OBJS)
+ALL_OBJS = $(OBJS) $(UTILS_OBJS)
 
 # Compiler and flags
 CC = cc
@@ -33,32 +27,27 @@ AR = ar rcs
 RM = rm -f
 
 # Include paths for header files
-INCLUDES = -I$(LIBFT_DIR) -I$(GNL_DIR) -I$(PRINTF_DIR) -I$(UTILS_DIR)
+INCLUDES = -I$(PRINTF_DIR) -I$(UTILS_DIR)
 
 # Library flags for linking
-LIBS = -L$(LIBFT_DIR) -lft -L$(GNL_DIR) -lgnl -L$(PRINTF_DIR) -lftprintf
+LIBS = -L$(PRINTF_DIR) -lftprintf -L$(UTILS_DIR) -lutils
 
 all: $(NAME)
 
-# Make libft and printf
-libs:
-	@make -C $(LIBFT_DIR)
+# Make printf
+libs: $(UTILS)
 	@make -C $(PRINTF_DIR)
 
-# Create GNL library
-$(GNL): $(GNL_OBJS)
-	$(AR) $(GNL) $(GNL_OBJS)
+# Create utils library
+$(UTILS): $(UTILS_OBJS)
+	$(AR) $(UTILS) $(UTILS_OBJS)
 
-# Compile utils object files
+# Compile utils object file
 $(UTILS_DIR)%.o: $(UTILS_DIR)%.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
-# Compile GNL object files
-$(GNL_DIR)%.o: $(GNL_DIR)%.c
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-
 # Compile so_long
-$(NAME): libs $(GNL) $(UTILS_OBJS) $(OBJS)
+$(NAME): libs $(UTILS_OBJS) $(OBJS)
 	$(CC) $(ALL_OBJS) $(LIBS) -lmlx -lX11 -lXext -o $(NAME)
 
 # Compile main object files
@@ -68,16 +57,14 @@ $(NAME): libs $(GNL) $(UTILS_OBJS) $(OBJS)
 
 #	REMOVE THIS SHIT
 testmap: libs
-	cc map_maker.c map_checker.c tests/testmap.c flood_fill.c utils/ft_strncpy.c $(LIBS)  -o tests/testmap
+	cc map_maker.c map_checker.c tests/testmap.c flood_fill.c $(LIBS)  -o tests/testmap
 
 clean:
 	$(RM) $(ALL_OBJS)
-	@make clean -C $(LIBFT_DIR)
 	@make clean -C $(PRINTF_DIR)
 
 fclean: clean
-	$(RM) $(NAME) $(GNL)
-	@make fclean -C $(LIBFT_DIR)
+	$(RM) $(NAME)
 	@make fclean -C $(PRINTF_DIR)
 
 re: fclean all
