@@ -17,7 +17,7 @@
 #  define TILE 50
 # endif
 
-# include <mlx.h>
+# include "../minilibx-linux/mlx.h"
 # include "gnl/get_next_line.h"
 # include "ft_printf/ft_printf.h"
 # include "libft/libft.h"

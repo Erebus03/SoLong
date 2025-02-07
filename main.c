@@ -69,9 +69,15 @@ int	init_game(t_game_info *game, char *filename)
 {
 	game->var = malloc(sizeof(t_vars));
 	game->grid = malloc(sizeof(t_map));
-	if (!game->var || !game->grid)
+	game->mlx = malloc(sizeof(void *));	
+	game->win = malloc(sizeof(void *));	
+	if (!game->var || !game->grid || !game->mlx || !game->win)
 	{
+<<<<<<< HEAD
 		ft_printf("Error\nMemory allocation failed in init_game()\n");
+=======
+		ft_printf("Error: Memory allocation failed in init_game()\n");
+>>>>>>> 0d68319 (mlxptr problem for mlx freeing func)
 		cleanup(game);
 		exit (1);
 	}
