@@ -16,17 +16,22 @@ int	error_handling(t_vars *vars)
 {
 	if (vars->player != 1)
 	{
-		ft_printf("Error: Map must contain one P. Found: %d\n", vars->player);
+		ft_printf("Error\nMap must contain one P. Found: %d\n", vars->player);
 		return (0);
 	}
 	if (vars->exit != 1)
 	{
-		ft_printf("Error: Map must contain one E. Found: %d\n", vars->exit);
+		ft_printf("Error\nMap must contain one E. Found: %d\n", vars->exit);
 		return (0);
 	}
 	if (vars->coin < 1)
 	{
-		ft_printf("Error: Map must contain >= one C. Found: %d\n", vars->coin);
+		ft_printf("Error\nMap must contain >=1 C. Found: %d\n", vars->coin);
+		return (0);
+	}
+	if (vars->enemy < 1)
+	{
+		ft_printf("Error\nMap must contain >=1 N. Found: %d\n", vars->coin);
 		return (0);
 	}
 	return (1);
@@ -44,6 +49,8 @@ void	update_stats(char cell, int i, int j, t_vars *variables)
 		variables->exit++;
 	else if (cell == 'C')
 		variables->coin++;
+	else if (cell == 'N')
+		variables->enemy++;
 }
 
 int	check_cells(char **map, t_vars *vars, int rows, int cols)
@@ -60,12 +67,12 @@ int	check_cells(char **map, t_vars *vars, int rows, int cols)
 		{
 			cell = map[i][j];
 			if (cell != 'C' && cell != 'P' && cell != 'E'
-				&& cell != '0' && cell != '1')
+				&& cell != '0' && cell != '1' && cell != 'N')
 			{
-				ft_printf("[%c] is no valid chracter!\n", cell);
+				ft_printf("Error\n[%c] is no valid chracter!\n", cell);
 				return (0);
 			}
-			if (cell == 'C' || cell == 'E' || cell == 'P')
+			if (cell == 'C' || cell == 'E' || cell == 'P' || cell == 'N')
 				update_stats(cell, i, j, vars);
 			j++;
 		}
@@ -90,7 +97,7 @@ int	check_boundries(int rows, int cols, char **map)
 			{
 				if (map[i][j] != '1')
 				{
-					ft_printf("Error: need a wall at (%d, %d)\n", i, j);
+					ft_printf("Error\nNeed a wall at (%d, %d)\n", i, j);
 					return (0);
 				}
 			}

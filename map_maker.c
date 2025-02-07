@@ -40,7 +40,7 @@ int	count_lines_and_columns(int fd, t_map *grid)
 		else if (line_len != grid->cols)
 		{
 			free(line);
-			ft_printf("Map ain't rectangular!\n");
+			ft_printf("Error\nMap ain't rectangular!\n");
 			return (0);
 		}
 		(grid->rows)++;
@@ -59,7 +59,7 @@ char	**allocate_map(int rows, int cols)
 	map = malloc(rows * sizeof(char *));
 	if (!map)
 	{
-		perror("Failed to allocate memory for map rows");
+		ft_printf("Error\nFailed to allocate memory for map rows");
 		return (NULL);
 	}
 	i = 0;
@@ -68,7 +68,7 @@ char	**allocate_map(int rows, int cols)
 		map[i] = malloc((cols + 1) * sizeof(char));
 		if (!map[i])
 		{
-			perror("Failed to allocate memory for map columns");
+			ft_printf("Error\nFailed to allocate memory for map columns");
 			free_map(map, rows);
 			return (NULL);
 		}
@@ -91,7 +91,7 @@ int	populate_map(int fd, char **map, int rows, int cols)
 		line = get_next_line(fd);
 		if (!line)
 		{
-			ft_printf("Coudn't read line in populate_map()\n");
+			ft_printf("Error\nCoudn't read line in populate_map()\n");
 			break ;
 		}
 		lines_read++;

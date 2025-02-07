@@ -27,7 +27,7 @@ int	check_reachability(char **map, t_map *grid)
 		{
 			if (map[i][j] == 'C' || map[i][j] == 'E')
 			{
-				printf("\nPosition(%d, %d)[%c] is not reachable\n",
+				printf("Error\nPosition(%d, %d)[%c] is not reachable\n",
 					i, j, map[i][j]);
 				return_value = 0;
 			}
@@ -42,7 +42,7 @@ void	flood_fill(t_map *grid, char **map, int x, int y)
 {
 	if (x < 0 || x >= grid->cols || y < 0 || y >= grid->rows)
 		return ;
-	if (map[y][x] == '1' || map[y][x] == 'V')
+	if (map[y][x] == '1' || map[y][x] == 'V' || map[y][x] == 'N')
 		return ;
 	map[y][x] = 'V';
 	flood_fill(grid, map, x - 1, y);

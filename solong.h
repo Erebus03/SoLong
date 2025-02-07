@@ -45,6 +45,7 @@ typedef struct s_vars
 {
 	int		p_pos[2];
 	int		player;
+	int		enemy;
 	int		exit;
 	int		coin;
 }	t_vars;
@@ -79,6 +80,8 @@ typedef struct s_game
 	int		fd;
 	void	*mlx;
 	void	*win;
+	int		frame;//
+	int		looper;//
 }	t_game_info;
 
 /* floodfill funcs */
@@ -125,4 +128,7 @@ void	free_player(t_img *img, void *mlxptr);
 void	free_enemy_attack(t_img *img, void *mlxptr);
 void	free_c_w_f_e(t_img *img, void *mlxptr);
 
+
+/* mevemnt.c */
+int	loop_init(t_game_info *game);
 #endif

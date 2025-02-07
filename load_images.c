@@ -16,27 +16,26 @@ void	free_images(t_img *img, void *mlxptr)
 {
 	if (img)
 	{
-		mlxptr = mlxptr;
-		// free_player(img, mlxptr);
-		// free_enemy_attack(img, mlxptr);
-		// free_c_w_f_e(img, mlxptr);
+		free_player(img, mlxptr);
+		free_enemy_attack(img, mlxptr);
+		free_c_w_f_e(img, mlxptr);
 	}
 	return ;
 }
 
 int	assigne_other(t_img *img, void *mlxptr, t_paths *path, int k)
 {
-	img->wall = mlx_xpm_file_to_image(mlxptr, path->wall, &k, &k);
-	img->floor = mlx_xpm_file_to_image(mlxptr, path->floor, &k, &k);
-	img->exit = mlx_xpm_file_to_image(mlxptr, path->exit, &k, &k);
-	if (!(img->wall) || !(img->floor) || !(img->exit))
+	img->coin[0] = mlx_xpm_file_to_image(mlxptr, path->coin[0], &k, &k);
+	img->coin[1] = mlx_xpm_file_to_image(mlxptr, path->coin[1], &k, &k);
+	if (!(img->coin[0]) || !(img->coin[1]))
 	{
 		free_images(img, mlxptr);
 		return (0);
 	}
-	img->coin[0] = mlx_xpm_file_to_image(mlxptr, path->coin[0], &k, &k);
-	img->coin[1] = mlx_xpm_file_to_image(mlxptr, path->coin[1], &k, &k);
-	if (!(img->coin[0]) || !(img->coin[1]))
+	img->wall = mlx_xpm_file_to_image(mlxptr, path->wall, &k, &k);
+	img->floor = mlx_xpm_file_to_image(mlxptr, path->floor, &k, &k);
+	img->exit = mlx_xpm_file_to_image(mlxptr, path->exit, &k, &k);
+	if (!(img->wall) || !(img->floor) || !(img->exit))
 	{
 		free_images(img, mlxptr);
 		return (0);
@@ -53,7 +52,6 @@ int	assigne_player_positions(t_img *img, void *mlxptr, t_paths *path, int k)
 	if (!(img->p_up[0]) || !(img->p_up[1])
 		|| !(img->p_down[0]) || !(img->p_down[1]))
 	{
-		printf("assigne_p_pos\n");
 		free_images(img, mlxptr);
 		return (0);
 	}
