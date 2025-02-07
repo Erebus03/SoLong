@@ -27,7 +27,15 @@ void	cleanup(t_game_info *game)
 		close(game->fd);
 	}
 	if (game->imgs)
+		free_images(game->imgs, game->mlx);
+	if (game->imgs)
 		free(game->imgs);
+	if (game->mlx)
+	{
+		mlx_destroy_window(game->mlx, game->win);
+		mlx_destroy_display(game->mlx);
+		free(game->mlx);
+	}
 	free(game);
 }
 
@@ -63,7 +71,7 @@ int	init_game(t_game_info *game, char *filename)
 	game->grid = malloc(sizeof(t_map));
 	if (!game->var || !game->grid)
 	{
-		ft_printf("Error\nMemory allocation failed for init_game()\n");
+		ft_printf("Error\nMemory allocation failed in init_game()\n");
 		cleanup(game);
 		exit (1);
 	}
@@ -102,7 +110,7 @@ int	main(int ac, char **av)
 		ft_printf("Error\nMemory allocation failed for game\n");
 		return (1);
 	}
-	*ginfo = (t_game_info){NULL, NULL, NULL, NULL, -1, NULL, NULL};
+	*ginfo = (t_game_info){NULL, NULL, NULL, NULL, -1, NULL, NULL, 0, 0};
 	if (!check_args(ac, av, ginfo))
 	{
 		cleanup(ginfo);

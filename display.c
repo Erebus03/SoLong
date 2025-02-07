@@ -18,7 +18,6 @@ int	put_image(t_game_info *g, char cell, int x, int y)
 
 	if (!g->mlx || !g->win || !g->imgs->wall)
 		return (0);
-	usleep(250);
 	ret = 1;
 	if (cell == '1')
 		ret = mlx_put_image_to_window(g->mlx, g->win, g->imgs->wall,
@@ -38,33 +37,13 @@ int	put_image(t_game_info *g, char cell, int x, int y)
 	return (ret);
 }
 
-int	play_game(t_game_info *g)
-{
-	int	x;
-	int	y;
-
-	y = 0;
-	while (y < g->grid->rows)
-	{
-		x = 0;
-		while (x < g->grid->cols)
-		{
-			if (!put_image(g, g->map[y][x], x, y))
-				return (0);
-			x++;
-		}
-		y++;
-	}
-	return (1);
-}
-
 void	assigne_paths(t_paths **p)
 {
 	(*p)->wall = "pics/wall.xpm";
 	(*p)->floor = "pics/floor.xpm";
 	(*p)->exit = "pics/wall.xpm";
 	(*p)->enemy[0] = "pics/enemy/enemy1.xpm";
-	(*p)->enemy[1] = "pics/enemy/enemy1.xpm";
+	(*p)->enemy[1] = "pics/enemy/enemy2.xpm";
 	(*p)->coin[0] = "pics/sheep/sheep1.xpm";
 	(*p)->coin[1] = "pics/sheep/sheep1.xpm";
 	(*p)->attack[0] = "pics/attack/attack1.xpm";
@@ -83,9 +62,6 @@ void	assigne_paths(t_paths **p)
 
 int	win_init(t_game_info *game, t_paths **path)
 {
-	int	res;
-
-	res = 1;
 	assigne_paths(path);
 	if (!assigne_images(&game->imgs, game->mlx, path))
 	{
@@ -94,11 +70,6 @@ int	win_init(t_game_info *game, t_paths **path)
 	}
 	game->win = mlx_new_window(game->mlx, game->grid->cols * TILE,
 			game->grid->rows * TILE, "Soolowng");
-	while (1)
-	{
-		res = play_game(game);
-		if (res == 0)
-			exit(1);
-	}
+	mlx_loop_hook(ginfo->mlx, loop_init, ginfo);
 	return (1);
 }
