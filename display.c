@@ -12,16 +12,32 @@
 
 #include "solong.h"
 
-# define UP
-# define DOWN
-# define RIGHT
-# define LEFT
-# define CLOSE
+# define UP 65362
+# define DOWN 65364
+# define RIGHT 65363
+# define LEFT 65361
+# define CLOSE 65307
 
-int	key_input(int keycode, void *game)
+int	key_input(int key, void *g)// can't i just declare it t_game_info ?
 {
-	(void)game;
-	printf("key: %d\n", keycode);
+	t_game_info *game;
+
+	game = (t_game_info *)g;
+	if (key == UP)
+		move_up(game, game->var->p_pos[0], game->var->p_pos[1]);
+	if (key == DOWN)
+		move_down(game, game->var->p_pos[0], game->var->p_pos[1]);
+	if (key == RIGHT)
+		move_right(game, game->var->p_pos[0], game->var->p_pos[1]);
+	if (key == LEFT)
+		move_left(game, game->var->p_pos[0], game->var->p_pos[1]);
+
+	if (key == CLOSE)
+	{
+		// cleanup(game); // segfaults
+		mlx_destroy_window(game->mlx, game->win);
+		exit (0);
+	}
     return (0);
 }
 
@@ -32,7 +48,11 @@ int	put_image(t_game_info *g, char cell, int x, int y)
 	
 	if (!g->mlx || !g->win || !g->imgs->wall)
 		return (0);
-	ret = 1; 
+	ret = 1;
+
+	if (cell == '0')
+		ret = mlx_put_image_to_window(g->mlx, g->win, g->imgs->floor,
+			x * TILE, y * TILE);
 	if (cell == '1')
 		ret = mlx_put_image_to_window(g->mlx, g->win, g->imgs->wall,
 				x * TILE, y * TILE);
@@ -55,12 +75,12 @@ int	loop_init(t_game_info *game)
 {
 	int	x;
 	int	y;
-
-	y = 0;
-
+	
 	game->frame++;
 	if (game->frame > 3)
 		game->frame = 0;
+
+	y = 0;
 	while (y < game->grid->rows)
 	{
 		x = 0;
@@ -106,6 +126,6 @@ void	assigne_paths(t_paths **p)
 	(*p)->p_down[1] = "pics/monster/monster1.xpm";
 	(*p)->p_right[0] = "pics/monster/monster1.xpm";
 	(*p)->p_right[1] = "pics/monster/monster1.xpm";
-	(*p)->p_left[0] = "pics/monster/monster1.xpm";
+	(*p)->p_left[0] = "pics/monster/dragon.xpm";
 	(*p)->p_left[1] = "pics/monster/monster1.xpm";
 }

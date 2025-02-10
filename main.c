@@ -128,7 +128,7 @@ int	main(int ac, char **av)
 	}
 	render_map(ginfo, &paths);
 	mlx_loop_hook(ginfo->mlx, loop_init, ginfo);
-	mlx_key_hook(ginfo->mlx, key_input, ginfo);
+	mlx_key_hook(ginfo->win, key_input, ginfo);
 	mlx_loop(ginfo->mlx);
 	cleanup(ginfo);
 	return (0);

@@ -123,11 +123,17 @@ int		assigne_player_positions(t_img *img, void *mlxptr,
 			t_paths *path, int k);
 int		assigne_other(t_img *img, void *mlxptr, t_paths *path, int k);
 void	free_images(t_img *img, void *mlx_ptr);
+
 /* free_iamges */
 void	free_player(t_img *img, void *mlxptr);
 void	free_enemy_attack(t_img *img, void *mlxptr);
 void	free_c_w_f_e(t_img *img, void *mlxptr);
 
-
 /* mevemnt.c */
+int	move_player(t_game_info *game, char direction);
+int move_left(t_game_info *game, int x, int y);
+int move_right(t_game_info *game, int x, int y);
+int move_down(t_game_info *game, int x, int y);
+int move_up(t_game_info *game, int x, int y);
+
 #endif
