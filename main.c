@@ -70,8 +70,8 @@ int	init_game(t_game_info *game, char *filename)
 {
 	game->var = malloc(sizeof(t_vars));
 	game->grid = malloc(sizeof(t_map));
-	game->mlx = malloc(sizeof(void *));	
-	game->win = malloc(sizeof(void *));	
+	game->mlx = malloc(sizeof(void *));// do they even get allocated
+	game->win = malloc(sizeof(void *));// do they even get allocated
 	if (!game->var || !game->grid || !game->mlx || !game->win)
 	{
 		ft_printf("Error\nMemory allocation failed for init_game()\n");
@@ -97,6 +97,8 @@ int	init_game(t_game_info *game, char *filename)
 int	render_map(t_game_info *game, t_paths *paths)
 {
 	game->mlx = mlx_init();
+	// if (!game->mlx)
+	// 	printf("mlx_init failed\n");
 	if (!win_init(game, &paths))
 		return (0);
 	return (1);
@@ -113,18 +115,20 @@ int	main(int ac, char **av)
 		ft_printf("Error\nMemory allocation failed for game\n");
 		return (1);
 	}
-	*ginfo = (t_game_info){NULL, NULL, NULL, NULL, -1, NULL, NULL, 0, 0};
-	if (!check_args(ac, av, ginfo))
+	*ginfo = (t_game_info){NULL, NULL, NULL, NULL, -1, NULL, NULL, 0};
+	if (!check_args(ac, av, ginfo))// merge these two
 	{
 		cleanup(ginfo);
 		return (1);
 	}
-	if (!init_game(ginfo, av[1]))
+	if (!init_game(ginfo, av[1]))// ^^^^^^^^^^^^^^^^^
 	{
 		cleanup(ginfo);
 		return (1);
 	}
 	render_map(ginfo, &paths);
+	mlx_loop_hook(ginfo->mlx, loop_init, ginfo);
+	mlx_key_hook(ginfo->mlx, key_input, ginfo);
 	mlx_loop(ginfo->mlx);
 	cleanup(ginfo);
 	return (0);

@@ -12,13 +12,30 @@
 
 #include "solong.h"
 
+# define UP
+# define DOWN
+# define RIGHT
+# define LEFT
+# define CLOSE
+
+int	key_input(int keycode, void *game)
+{
+	(void)game;
+	(void)keycode;
+	write(1, "K", 1);
+	fprintf(stderr, "Key pressed: %d\n", keycode);
+    return (0);
+}
+
 int	put_image(t_game_info *g, char cell, int x, int y)
 {
 	int	ret;
 
+	usleep(100000);// jj
 	if (!g->mlx || !g->win || !g->imgs->wall)
 		return (0);
 	ret = 1;
+	printf("%c\n", cell);// jj 
 	if (cell == '1')
 		ret = mlx_put_image_to_window(g->mlx, g->win, g->imgs->wall,
 				x * TILE, y * TILE);
@@ -32,9 +49,45 @@ int	put_image(t_game_info *g, char cell, int x, int y)
 		ret = mlx_put_image_to_window(g->mlx, g->win, g->imgs->exit,
 				x * TILE, y * TILE);
 	else if (cell == 'N')
-		ret = mlx_put_image_to_window(g->mlx, g->win, g->imgs->enemy[0],
+		ret = mlx_put_image_to_window(g->mlx, g->win, g->imgs->attack[g->frame],
 				x * TILE, y * TILE);
 	return (ret);
+}
+
+int	loop_init(t_game_info *game)
+{
+	int	x;
+	int	y;
+
+	y = 0;
+
+	game->frame++;
+	if (game->frame > 3)
+		game->frame = 0;
+	while (y < game->grid->rows)
+	{
+		x = 0;
+		while (x < game->grid->cols)
+		{
+			put_image(game, game->map[y][x], x , y);// figure out frames and that
+			x++;
+		}
+		y++;
+	}
+	return (1);
+}
+
+int	win_init(t_game_info *game, t_paths **path)
+{
+	assigne_paths(path);
+	if (!assigne_images(&game->imgs, game->mlx, path))
+	{
+		ft_printf("Error\nCouldn't assigne images!\n");
+		return (0);
+	}
+	game->win = mlx_new_window(game->mlx, game->grid->cols * TILE,
+			game->grid->rows * TILE, "Soolowng");
+	return (1);
 }
 
 void	assigne_paths(t_paths **p)
@@ -58,18 +111,4 @@ void	assigne_paths(t_paths **p)
 	(*p)->p_right[1] = "pics/monster/monster1.xpm";
 	(*p)->p_left[0] = "pics/monster/monster1.xpm";
 	(*p)->p_left[1] = "pics/monster/monster1.xpm";
-}
-
-int	win_init(t_game_info *game, t_paths **path)
-{
-	assigne_paths(path);
-	if (!assigne_images(&game->imgs, game->mlx, path))
-	{
-		ft_printf("Error\nCouldn't assigne images!\n");
-		return (0);
-	}
-	game->win = mlx_new_window(game->mlx, game->grid->cols * TILE,
-			game->grid->rows * TILE, "Soolowng");
-	mlx_loop_hook(game->mlx, loop_init, game);
-	return (1);
 }
