@@ -113,7 +113,7 @@ int		win_init(t_game_info *game, t_paths	**paths);
 int		put_image(t_game_info *g, char cell, int x, int y);
 void	assigne_paths(t_paths **p);
 int		loop_init(t_game_info *game);
-int		key_input(int keycode, void *some_param);
+int		key_input(int keycode, void *param);
 
 /* load_images.c */
 int		assigne_images(t_img **imgs, void *mlx_ptr, t_paths **paths);

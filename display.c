@@ -21,9 +21,7 @@
 int	key_input(int keycode, void *game)
 {
 	(void)game;
-	(void)keycode;
-	write(1, "K", 1);
-	fprintf(stderr, "Key pressed: %d\n", keycode);
+	printf("key: %d\n", keycode);
     return (0);
 }
 
@@ -31,11 +29,10 @@ int	put_image(t_game_info *g, char cell, int x, int y)
 {
 	int	ret;
 
-	usleep(100000);// jj
+	
 	if (!g->mlx || !g->win || !g->imgs->wall)
 		return (0);
-	ret = 1;
-	printf("%c\n", cell);// jj 
+	ret = 1; 
 	if (cell == '1')
 		ret = mlx_put_image_to_window(g->mlx, g->win, g->imgs->wall,
 				x * TILE, y * TILE);
