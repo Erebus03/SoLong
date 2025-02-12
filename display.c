@@ -111,7 +111,7 @@ void	assigne_paths(t_paths **p)
 {
 	(*p)->wall = "pics/wall.xpm";
 	(*p)->floor = "pics/floor.xpm";
-	(*p)->exit = "pics/wall.xpm";
+	(*p)->exit = "public/0.xpm";
 	(*p)->enemy[0] = "pics/enemy/enemy1.xpm";
 	(*p)->enemy[1] = "pics/enemy/enemy2.xpm";
 	(*p)->coin[0] = "pics/sheep/sheep1.xpm";

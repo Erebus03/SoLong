@@ -45,10 +45,10 @@ int move_right(t_game_info *game, int x, int y)
 		game->map[y][x + 1] = game->map[y][x];
 		game->map[y][x] = '0';
 		game->var->p_pos[0] = x + 1;
-		return 0;
+		return (0);
 	}
 	printf("wall or exit\n");
-	return 0;
+	return (0);
 }
 
 int move_left(t_game_info *game, int x, int y)
@@ -62,10 +62,10 @@ int move_left(t_game_info *game, int x, int y)
 		game->map[y][x - 1] = game->map[y][x];
 		game->map[y][x] = '0';
 		game->var->p_pos[0] = x - 1;
-		return 0;
+		return (0);
 	}
 	printf("wall or exit\n");
-	return 0;
+	return (0);
 }
 
 // int	move_player(t_game_info *game, char direction)
