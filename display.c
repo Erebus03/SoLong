@@ -31,11 +31,9 @@ int	key_input(int key, void *g)// can't i just declare it t_game_info ?
 		move_right(game, game->var->p_pos[0], game->var->p_pos[1]);
 	if (key == LEFT)
 		move_left(game, game->var->p_pos[0], game->var->p_pos[1]);
-
 	if (key == CLOSE)
 	{
-		// cleanup(game); // segfaults
-		mlx_destroy_window(game->mlx, game->win);
+		cleanup(game);
 		exit (0);
 	}
     return (0);
@@ -45,29 +43,28 @@ int	put_image(t_game_info *g, char cell, int x, int y)
 {
 	int	ret;
 
-	
 	if (!g->mlx || !g->win || !g->imgs->wall)
 		return (0);
+	usleep(290);//		change it based on where your executing it
 	ret = 1;
-
-	if (cell == '0')
-		ret = mlx_put_image_to_window(g->mlx, g->win, g->imgs->floor,
-			x * TILE, y * TILE);
+	// if (cell == '0')
+	// 	ret = mlx_put_image_to_window(g->mlx, g->win, g->imgs->floor,
+	// 		x * TILE, y * TILE);
 	if (cell == '1')
 		ret = mlx_put_image_to_window(g->mlx, g->win, g->imgs->wall,
 				x * TILE, y * TILE);
 	else if (cell == 'C')
-		ret = mlx_put_image_to_window(g->mlx, g->win, g->imgs->coin[0],
+		ret = mlx_put_image_to_window(g->mlx, g->win, g->imgs->coin[g->frame % 2],
 				x * TILE, y * TILE);
 	else if (cell == 'P')
-		ret = mlx_put_image_to_window(g->mlx, g->win, g->imgs->p_left[0],
+		ret = mlx_put_image_to_window(g->mlx, g->win, g->imgs->p_left[g->frame % 2],
 				x * TILE, y * TILE);
 	else if (cell == 'E')
 		ret = mlx_put_image_to_window(g->mlx, g->win, g->imgs->exit,
 				x * TILE, y * TILE);
 	else if (cell == 'N')
-		ret = mlx_put_image_to_window(g->mlx, g->win, g->imgs->attack[g->frame],
-				x * TILE, y * TILE);
+		ret = mlx_put_image_to_window(g->mlx, g->win, g->imgs->enemy[g->frame % 4],
+				x * TILE, y * TILE); 
 	return (ret);
 }
 
@@ -77,7 +74,7 @@ int	loop_init(t_game_info *game)
 	int	y;
 	
 	game->frame++;
-	if (game->frame > 3)
+	if (game->frame >= 12)
 		game->frame = 0;
 
 	y = 0;
@@ -121,11 +118,11 @@ void	assigne_paths(t_paths **p)
 	(*p)->attack[2] = "pics/attack/attack3.xpm";
 	(*p)->attack[3] = "pics/attack/attack4.xpm";
 	(*p)->p_up[0] = "pics/monster/monster1.xpm";
-	(*p)->p_up[1] = "pics/monster/monster1.xpm";
+	(*p)->p_up[1] = "pics/monster/dragon.xpm";
 	(*p)->p_down[0] = "pics/monster/monster1.xpm";
-	(*p)->p_down[1] = "pics/monster/monster1.xpm";
+	(*p)->p_down[1] = "pics/monster/dragon.xpm";
 	(*p)->p_right[0] = "pics/monster/monster1.xpm";
-	(*p)->p_right[1] = "pics/monster/monster1.xpm";
-	(*p)->p_left[0] = "pics/monster/dragon.xpm";
-	(*p)->p_left[1] = "pics/monster/monster1.xpm";
+	(*p)->p_right[1] = "pics/monster/dragon.xpm";
+	(*p)->p_left[0] = "pics/monster/monster1.xpm";
+	(*p)->p_left[1] = "pics/monster/dragon.xpm";
 }

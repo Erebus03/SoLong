@@ -79,7 +79,7 @@ typedef struct s_game
 	int		fd;
 	void	*mlx;
 	void	*win;
-	int		frame;//
+	int		frame;//	good % method
 }	t_game_info;
 
 /* floodfill funcs */
