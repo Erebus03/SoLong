@@ -12,93 +12,88 @@
 
 #include "solong.h"
 
-int	error_handling(t_vars *vars)
-{
-	if (vars->player != 1)
-	{
-		ft_printf("Error\nMap must contain one P. Found: %d\n", vars->player);
-		return (0);
-	}
-	if (vars->exit != 1)
-	{
-		ft_printf("Error\nMap must contain one E. Found: %d\n", vars->exit);
-		return (0);
-	}
-	if (vars->coin < 1)
-	{
-		ft_printf("Error\nMap must contain >=1 C. Found: %d\n", vars->coin);
-		return (0);
-	}
-	if (vars->enemy < 1)
-	{
-		ft_printf("Error\nMap must contain >=1 N. Found: %d\n", vars->coin);
-		return (0);
-	}
-	return (1);
-}
+// int	error_handling(t_game *game)
+// {
+// 	if (game->player != 1 || game->exit != 1
+// 		|| game->coin < 1 || game->enemy < 1)
+// 	{
+// 		ft_printf("Error\nMap elements ain't valid (1P, 1E, >=1C, >=1N)");
+// 		cleanup(game, 1);
+// 		exit(1);
+// 	}
+// 	return (1);
+// }
 
-void	update_stats(char cell, int i, int j, t_vars *variables)
-{
-	if (cell == 'P')
-	{
-		variables->player++;
-		variables->p_pos[0] = j;
-		variables->p_pos[1] = i;
-	}
-	else if (cell == 'E')
-		variables->exit++;
-	else if (cell == 'C')
-		variables->coin++;
-	else if (cell == 'N')
-		variables->enemy++;
-}
+// void	update_stats(char cell, int i, int j, t_game *game)
+// {
+// 	if (cell == 'P')
+// 	{
+// 		game->player++;
+// 		game->p_pos[0] = j;
+// 		game->p_pos[1] = i;
+// 	}
+// 	else if (cell == 'E')
+// 		game->exit++;
+// 	else if (cell == 'C')
+// 		game->coin++;
+// 	else if (cell == 'N')
+// 		game->enemy++;
+// }
 
-int	check_cells(char **map, t_vars *vars, int rows, int cols)
+int	check_cells(t_game *game)
 {
-	int		i;
-	int		j;
+	int		(i), (j);
 	char	cell;
 
 	i = 0;
-	while (i < rows)
+	while (i < game->rows)
 	{
 		j = 0;
-		while (j < cols)
+		while (j < game->cols)
 		{
-			cell = map[i][j];
-			if (cell != 'C' && cell != 'P' && cell != 'E'
-				&& cell != '0' && cell != '1' && cell != 'N')
-			{
-				ft_printf("Error\n[%c] is no valid chracter!\n", cell);
+			cell = game->map[i][j];
+			//	ft_printf("Error\n[%c] is no valid chracter!\n", cell);
+			if (cell != 'C' && cell != 'P' && cell != 'E' && cell != '0' && cell != '1' && cell != 'N')
 				return (0);
+			if (cell == 'P')
+			{
+				game->player++;
+				game->p_pos[0] = j;
+				game->p_pos[1] = i;
 			}
-			if (cell == 'C' || cell == 'E' || cell == 'P' || cell == 'N')
-				update_stats(cell, i, j, vars);
+			else if (cell == 'E')
+				game->exit++;
+			else if (cell == 'C')
+				game->coin++;
+			else if (cell == 'N')
+				game->enemy++;
 			j++;
 		}
 		i++;
 	}
 	return (1);
 }
-
-int	check_boundries(int rows, int cols, char **map)
+	// if (cell == 'C' || cell == 'E' || cell == 'P' || cell == 'N')
+	// 	update_stats(cell, i, j, vars);
+	
+int	check_boundries(t_game *game)
 {
 	int	i;
 	int	j;
 
 	i = 0;
 	j = 0;
-	while (i < rows)
+	while (i < game->rows)
 	{
 		j = 0;
-		while (j < cols)
+		while (j < game->cols)
 		{
-			if (i == 0 || i == rows - 1 || j == 0 || j == cols - 1)
+			if (i == 0 || i == game->rows - 1 || j == 0 || j == game->cols - 1)
 			{
-				if (map[i][j] != '1')
+				if (game->map[i][j] != '1')
 				{
 					ft_printf("Error\nNeed a wall at (%d, %d)\n", i, j);
-					return (0);
+					cleanup(game, 1);// removed areturn here to exit with cleaup
 				}
 			}
 			j++;
@@ -108,15 +103,19 @@ int	check_boundries(int rows, int cols, char **map)
 	return (1);
 }
 
-int	is_map_valid(char **map, t_map *grid, t_vars *var, char *filename)
+int	is_map_valid(t_game *game)
 {
-	if (check_boundries(grid->rows, grid->cols, map) == 0)
+	if (check_boundries(game) == 0)
 		return (0);
-	if (!check_cells(map, var, grid->rows, grid->cols))
+	if (!check_cells(game))
 		return (0);
-	if (error_handling(var) == 0)
-		return (0);
-	if (all_is_reachable(var->p_pos[0], var->p_pos[1], grid, filename) == 0)
+	if (game->player != 1 || game->exit != 1
+		|| game->coin < 1 || game->enemy < 1)
+	{
+		ft_printf("Error\nMap elements ain't valid (1P, 1E, >=1C, >=1N)");
+		cleanup(game, 1);
+	}
+	if (all_is_reachable(game) == 0) //flood_fill
 		return (0);
 	return (1);
 }

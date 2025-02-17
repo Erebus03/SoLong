@@ -18,72 +18,71 @@
 # define LEFT 65361
 # define CLOSE 65307
 
-int	key_input(int key, void *g)// can't i just declare it t_game_info ?
+int	key_input(int key, t_game *game)
 {
-	t_game_info *game;
-
-	game = (t_game_info *)g;
 	if (key == UP)
-		move_up(game, game->var->p_pos[0], game->var->p_pos[1]);
+		move_up(game, game->p_pos[0], game->p_pos[1]);
 	if (key == DOWN)
-		move_down(game, game->var->p_pos[0], game->var->p_pos[1]);
+		move_down(game, game->p_pos[0], game->p_pos[1]);
 	if (key == RIGHT)
-		move_right(game, game->var->p_pos[0], game->var->p_pos[1]);
+		move_right(game, game->p_pos[0], game->p_pos[1]);
 	if (key == LEFT)
-		move_left(game, game->var->p_pos[0], game->var->p_pos[1]);
+		move_left(game, game->p_pos[0], game->p_pos[1]);
 	if (key == CLOSE)
-	{
-		cleanup(game);
-		exit (0);
-	}
+		cleanup(game, 0);
     return (0);
 }
 
-int	put_image(t_game_info *g, char cell, int x, int y)
+int	put_image(t_game *g, char cell, int x, int y)
 {
-	int	ret;
-
 	if (!g->mlx || !g->win || !g->imgs->wall)
 		return (0);
 	usleep(290);//		change it based on where your executing it
-	ret = 1;
-	// if (cell == '0')
-	// 	ret = mlx_put_image_to_window(g->mlx, g->win, g->imgs->floor,
-	// 		x * TILE, y * TILE);
-	if (cell == '1')
-		ret = mlx_put_image_to_window(g->mlx, g->win, g->imgs->wall,
-				x * TILE, y * TILE);
+	if (cell == '0')
+		return mlx_put_image_to_window(g->mlx, g->win, g->imgs->floor,
+			x * TILE, y * TILE);
 	else if (cell == 'C')
-		ret = mlx_put_image_to_window(g->mlx, g->win, g->imgs->coin[g->frame % 2],
+		return mlx_put_image_to_window(g->mlx, g->win, g->imgs->coin[g->frame % 2],
 				x * TILE, y * TILE);
 	else if (cell == 'P')
-		ret = mlx_put_image_to_window(g->mlx, g->win, g->imgs->p_left[g->frame % 2],
+		return mlx_put_image_to_window(g->mlx, g->win, g->imgs->p_left[g->frame % 2],
 				x * TILE, y * TILE);
 	else if (cell == 'E')
-		ret = mlx_put_image_to_window(g->mlx, g->win, g->imgs->exit,
+	{
+		if (g->coin == 0)
+			return mlx_put_image_to_window(g->mlx, g->win, g->imgs->exit,
+					x * TILE, y * TILE);
+		else
+			return mlx_put_image_to_window(g->mlx, g->win, g->imgs->chained,
 				x * TILE, y * TILE);
+	}
 	else if (cell == 'N')
-		ret = mlx_put_image_to_window(g->mlx, g->win, g->imgs->enemy[g->frame % 4],
+		return mlx_put_image_to_window(g->mlx, g->win, g->imgs->enemy[g->frame % 2],
 				x * TILE, y * TILE); 
-	return (ret);
+	return (0);
 }
 
-int	loop_init(t_game_info *game)
+int	loop_init(t_game *g)
 {
 	int	x;
 	int	y;
 	
-	game->frame++;
-	if (game->frame >= 12)
-		game->frame = 0;
+	g->frame++;
+	if (g->frame >= 12)
+		g->frame = 0;
 
 	y = 0;
-	while (y < game->grid->rows)
+	while (y < g->rows)
 	{
 		x = 0;
-		while (x < game->grid->cols)
+		while (x < g->cols)
 		{
-			put_image(game, game->map[y][x], x , y);// figure out frames and that
+			// no error check??
+			if (g->map[y][x] == '1')
+				mlx_put_image_to_window(g->mlx, g->win, g->imgs->wall,
+					x * TILE, y * TILE);
+			else
+				put_image(g, g->map[y][x], x , y);// figure out frames and that
 			x++;
 		}
 		y++;
@@ -91,16 +90,16 @@ int	loop_init(t_game_info *game)
 	return (1);
 }
 
-int	win_init(t_game_info *game, t_paths **path)
+int	win_init(t_game *game, t_paths **path)
 {
 	assigne_paths(path);
-	if (!assigne_images(&game->imgs, game->mlx, path))
+	if (!assigne_images(game, path))
 	{
 		ft_printf("Error\nCouldn't assigne images!\n");
 		return (0);
 	}
-	game->win = mlx_new_window(game->mlx, game->grid->cols * TILE,
-			game->grid->rows * TILE, "Soolowng");
+	game->win = mlx_new_window(game->mlx, game->cols * TILE,
+			game->rows * TILE, "Solong - hahahahah");
 	return (1);
 }
 
@@ -108,21 +107,22 @@ void	assigne_paths(t_paths **p)
 {
 	(*p)->wall = "pics/wall.xpm";
 	(*p)->floor = "pics/floor.xpm";
-	(*p)->exit = "public/0.xpm";
-	(*p)->enemy[0] = "pics/enemy/enemy1.xpm";
-	(*p)->enemy[1] = "pics/enemy/enemy2.xpm";
-	(*p)->coin[0] = "pics/sheep/sheep1.xpm";
-	(*p)->coin[1] = "pics/sheep/sheep1.xpm";
-	(*p)->attack[0] = "pics/attack/attack1.xpm";
-	(*p)->attack[1] = "pics/attack/attack2.xpm";
-	(*p)->attack[2] = "pics/attack/attack3.xpm";
-	(*p)->attack[3] = "pics/attack/attack4.xpm";
-	(*p)->p_up[0] = "pics/monster/monster1.xpm";
-	(*p)->p_up[1] = "pics/monster/dragon.xpm";
-	(*p)->p_down[0] = "pics/monster/monster1.xpm";
-	(*p)->p_down[1] = "pics/monster/dragon.xpm";
-	(*p)->p_right[0] = "pics/monster/monster1.xpm";
-	(*p)->p_right[1] = "pics/monster/dragon.xpm";
-	(*p)->p_left[0] = "pics/monster/monster1.xpm";
-	(*p)->p_left[1] = "pics/monster/dragon.xpm";
+	(*p)->exit = "pics/exit.xpm";
+	(*p)->chained = "pics/chained.xpm";
+	(*p)->enemy[0] = "pics/enemy/1.xpm";
+	(*p)->enemy[1] = "pics/enemy/2.xpm";
+	(*p)->coin[0] = "pics/sheep/1.xpm";
+	(*p)->coin[1] = "pics/sheep/2.xpm";
+	(*p)->attack[0] = "pics/attack/1.xpm";
+	(*p)->attack[1] = "pics/attack/2.xpm";
+	(*p)->attack[2] = "pics/attack/3.xpm";
+	(*p)->attack[3] = "pics/attack/4.xpm";
+	(*p)->p_up[0] = "pics/monster/right1.xpm";
+	(*p)->p_up[1] = "pics/monster/right1.xpm";
+	(*p)->p_down[0] = "pics/monster/left1.xpm";
+	(*p)->p_down[1] = "pics/monster/left1.xpm";
+	(*p)->p_right[0] = "pics/monster/right1.xpm";
+	(*p)->p_right[1] = "pics/monster/right2.xpm";
+	(*p)->p_left[0] = "pics/monster/left1.xpm";
+	(*p)->p_left[1] = "pics/monster/left2.xpm";
 }

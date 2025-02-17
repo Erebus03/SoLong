@@ -14,13 +14,29 @@
 
 void	free_images(t_img *img, void *mlxptr)
 {
-	if (img)
-	{
-		free_player(img, mlxptr);
-		free_enemy_attack(img, mlxptr);
-		free_c_w_f_e(img, mlxptr);
-	}
-	return ;
+	printf("freeing imgs\n");//	remove
+	if (!img)
+		return ;
+	mlx_destroy_image(mlxptr, img->p_up[0]);
+	mlx_destroy_image(mlxptr, img->p_up[1]);
+	mlx_destroy_image(mlxptr, img->p_down[0]);
+	mlx_destroy_image(mlxptr, img->p_down[1]);
+	mlx_destroy_image(mlxptr, img->p_right[0]);
+	mlx_destroy_image(mlxptr, img->p_right[1]);
+	mlx_destroy_image(mlxptr, img->p_left[0]);
+	mlx_destroy_image(mlxptr, img->p_left[1]);
+	mlx_destroy_image(mlxptr, img->enemy[0]);
+	mlx_destroy_image(mlxptr, img->enemy[1]);
+	mlx_destroy_image(mlxptr, img->attack[0]);
+	mlx_destroy_image(mlxptr, img->attack[1]);
+	mlx_destroy_image(mlxptr, img->attack[2]);
+	mlx_destroy_image(mlxptr, img->attack[3]);
+	mlx_destroy_image(mlxptr, img->wall);
+	mlx_destroy_image(mlxptr, img->exit);
+	mlx_destroy_image(mlxptr, img->chained);
+	mlx_destroy_image(mlxptr, img->floor);
+	mlx_destroy_image(mlxptr, img->coin[0]);
+	mlx_destroy_image(mlxptr, img->coin[1]);
 }
 
 int	assigne_other(t_img *img, void *mlxptr, t_paths *path, int k)
@@ -35,6 +51,7 @@ int	assigne_other(t_img *img, void *mlxptr, t_paths *path, int k)
 	img->wall = mlx_xpm_file_to_image(mlxptr, path->wall, &k, &k);
 	img->floor = mlx_xpm_file_to_image(mlxptr, path->floor, &k, &k);
 	img->exit = mlx_xpm_file_to_image(mlxptr, path->exit, &k, &k);
+	img->chained = mlx_xpm_file_to_image(mlxptr, path->chained, &k, &k);
 	if (!(img->wall) || !(img->floor) || !(img->exit))
 	{
 		free_images(img, mlxptr);
@@ -90,22 +107,22 @@ int	assigne_enemy_and_attack(t_img *img, void *mlxptr, t_paths *path, int k)
 	return (1);
 }
 
-int	assigne_images(t_img **imgs, void *mlx_ptr, t_paths **path)
+int	assigne_images(t_game *game, t_paths **paths)
 {
 	int	k;
 
 	k = 0;
-	*imgs = malloc(sizeof(t_img));
-	if (!*imgs)
+	game->imgs = malloc(sizeof(t_img));
+	if (!game->imgs)
 	{
 		ft_printf("Error:\nAllocation failed for t_imgs\n");
 		return (0);
 	}
-	if (!assigne_player_positions(*imgs, mlx_ptr, *path, k))
+	if (!assigne_player_positions(game->imgs, game->mlx, *paths, k))
 		return (0);
-	if (!assigne_enemy_and_attack(*imgs, mlx_ptr, *path, k))
+	if (!assigne_enemy_and_attack(game->imgs, game->mlx, *paths, k))
 		return (0);
-	if (!assigne_other(*imgs, mlx_ptr, *path, k))
+	if (!assigne_other(game->imgs, game->mlx, *paths, k))
 		return (0);
 	return (1);
 }

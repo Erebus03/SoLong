@@ -12,34 +12,43 @@
 
 #include "solong.h"
 
-void	cleanup(t_game_info *game)
+void	cleanup(t_game *game, int exitmode)
 {
+	printf("cleaning up\n");
 	if (!game)
 		return ;
 	if (game->map)
-		free_map(game->map, game->grid->rows);
-	if (game->grid)
-		free(game->grid);
-	if (game->var)
-		free(game->var);
+		free_map(game->rows, game->map);
+	game->map = NULL;
 	if (game->fd > 0)
 	{
 		close(game->fd);
 	}
 	if (game->imgs)
+	{
 		free_images(game->imgs, game->mlx);
-	if (game->imgs)
 		free(game->imgs);
+	}
+	game->imgs = NULL;
 	if (game->mlx)
 	{
-		mlx_destroy_window(game->mlx, game->win);
+		if (game->win)
+			mlx_destroy_window(game->mlx, game->win);
+		game->win = NULL;
+		printf("window gone\n");
 		mlx_destroy_display(game->mlx);
+		printf("display gone, game.mlx = %p\n", game->mlx);
 		free(game->mlx);
+		game->mlx = NULL;
+		printf("mlx gone\n");
 	}
 	free(game);
+	game = NULL;
+	printf("out cleanup()\n");
+	exit(exitmode);
 }
 
-int	check_args(int ac, char **av, t_game_info *game)
+int	check_args(int ac, char **av, t_game *game)
 {
 	if (ac != 2)
 	{
@@ -52,7 +61,7 @@ int	check_args(int ac, char **av, t_game_info *game)
 		return (0);
 	}
 	if (av[1][0] == '.' && av[1][1] != '.' &&
-		av[1][0] != '/' && ft_strncmp(av[1], ".ber", 4) != 0)
+		av[1][0] != '/' && ft_strncmp(av[1], ".ber", 4) != 0) //	remove ../ 
 	{
 		ft_printf("Error\nHidden file not allowed\n");
 		return (0);
@@ -66,39 +75,26 @@ int	check_args(int ac, char **av, t_game_info *game)
 	return (1);
 }
 
-int	init_game(t_game_info *game, char *filename)
+int	init_game(t_game *game)
 {
-	game->var = malloc(sizeof(t_vars));
-	game->grid = malloc(sizeof(t_map));
-	game->mlx = malloc(sizeof(void *));// do they even get allocated
-	game->win = malloc(sizeof(void *));// do they even get allocated
-	if (!game->var || !game->grid || !game->mlx || !game->win)
-	{
-		ft_printf("Error\nMemory allocation failed for init_game()\n");
-		cleanup(game);
-		exit (1);
-	}
-	*(game->var) = (t_vars){{0, 0}, 0, 0, 0, 0};
-	*(game->grid) = (t_map){0, 0};
-	game->map = make_map(game->fd, game->grid, filename);
+	game->mlx = NULL;
+	game->win = NULL;
+	make_map(game);
 	if (!game->map)
 	{
 		ft_printf("Error\nFailed to create map\n");
-		return (0);
+		cleanup(game, 1);
 	}
-	if (!is_map_valid(game->map, game->grid, game->var, filename))
-	{
-		ft_printf("Error\nInvalid ma\n");
-		return (0);
-	}
+	if (!is_map_valid(game))
+		cleanup(game, 1);
 	return (1);
 }
 
-int	render_map(t_game_info *game, t_paths *paths)
+int	render_map(t_game *game, t_paths *paths)
 {
 	game->mlx = mlx_init();
-	// if (!game->mlx)
-	// 	printf("mlx_init failed\n");
+	if (!game->mlx)
+		printf("mlx_init failed\n");
 	if (!win_init(game, &paths))
 		return (0);
 	return (1);
@@ -106,30 +102,24 @@ int	render_map(t_game_info *game, t_paths *paths)
 
 int	main(int ac, char **av)
 {
-	t_game_info	*ginfo;
+	t_game	*ginfo;
 	t_paths		paths;
 
-	ginfo = malloc(sizeof(t_game_info));
+	ginfo = malloc(sizeof(t_game));
 	if (!ginfo)
 	{
 		ft_printf("Error\nMemory allocation failed for game\n");
 		return (1);
 	}
-	*ginfo = (t_game_info){NULL, NULL, NULL, NULL, -1, NULL, NULL, 0};
-	if (!check_args(ac, av, ginfo))// merge these two
-	{
-		cleanup(ginfo);
-		return (1);
-	}
-	if (!init_game(ginfo, av[1]))// ^^^^^^^^^^^^^^^^^
-	{
-		cleanup(ginfo);
-		return (1);
-	}
+	*ginfo = (t_game){0, 0, {0, 0}, 0, 0, 0, 0, NULL, NULL, NULL, -1, NULL, NULL, 0};
+	if (!check_args(ac, av, ginfo))
+		cleanup(ginfo, 1);
+	ginfo->filename = av[1];
+	init_game(ginfo);
 	render_map(ginfo, &paths);
-	mlx_loop_hook(ginfo->mlx, loop_init, ginfo);
 	mlx_key_hook(ginfo->win, key_input, ginfo);
+	mlx_loop_hook(ginfo->mlx, loop_init, ginfo);
 	mlx_loop(ginfo->mlx);
-	cleanup(ginfo);
+	cleanup(ginfo, 0);
 	return (0);
 }

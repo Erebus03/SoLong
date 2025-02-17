@@ -12,72 +12,79 @@
 
 #include "solong.h"
 
-void	free_map(char **map, int rows)
+void	free_map(int rows, char **map)
 {
 	int	i;
 
-	if (!map)
+	if (!map || !*map)
 		return ;
 	i = 0;
 	while (i < rows)
-		free(map[i++]);
+	{
+		if (map[i])
+			free(map[i]);
+		map[i] = NULL;//	watchout segfault
+		i++;
+	}
 	free(map);
+	map = NULL;
 }
 
-int	count_lines_and_columns(int fd, t_map *grid)
+int	count_lines_and_columns(t_game *game)
 {
 	char	*line;
 	int		line_len;
 
-	grid->rows = 0;
-	grid->cols = 0;
-	line = get_next_line(fd);
+	game->rows = 0;
+	game->cols = 0;
+	game->fd = open(game->filename, O_RDONLY);
+	line = get_next_line(game->fd);
 	while (line != NULL)
 	{
 		line_len = ft_strlen(line);
-		if (grid->rows == 0)
-			grid->cols = line_len;
-		else if (line_len != grid->cols)
+		if (game->rows == 0)
+			game->cols = line_len;
+		else if (line_len != game->cols)
 		{
 			free(line);
 			ft_printf("Error\nMap ain't rectangular!\n");
-			return (0);
+			return 0;
 		}
-		(grid->rows)++;
+		(game->rows)++;
 		free(line);
-		line = get_next_line(fd);
+		line = get_next_line(game->fd);
 	}
 	free(line);
-	return (grid->rows > 0 && grid->cols > 0);
+	line = NULL;
+	return (game->rows > 0 && game->cols > 0);
 }
 
-char	**allocate_map(int rows, int cols)
+char	**allocate_map(t_game *game)
 {
 	int		i;
-	char	**map;
 
-	map = malloc(rows * sizeof(char *));
-	if (!map)
+	game->map = malloc(game->rows * sizeof(char *));
+	if (!game->map)
 	{
 		ft_printf("Error\nFailed to allocate memory for map rows");
 		return (NULL);
 	}
 	i = 0;
-	while (i < rows)
+	while (i < game->rows)
 	{
-		map[i] = malloc((cols + 1) * sizeof(char));
-		if (!map[i])
+		game->map[i] = malloc((game->cols + 1));
+		if (!game->map[i])
 		{
 			ft_printf("Error\nFailed to allocate memory for map columns");
-			free_map(map, rows);
+			free_map(game->rows, game->map);
 			return (NULL);
 		}
 		i++;
 	}
-	return (map);
+	return (game->map);
 }
 
-int	populate_map(int fd, char **map, int rows, int cols)
+int	populate_map(t_game *game)
 {
 	char	*line;
 	int		lines_read;
@@ -86,36 +93,36 @@ int	populate_map(int fd, char **map, int rows, int cols)
 	line = NULL;
 	lines_read = 0;
 	i = 0;
-	while (i < rows)
+	game->fd = open(game->filename, O_RDONLY);
+	while (i < game->rows)
 	{
-		line = get_next_line(fd);
+		line = get_next_line(game->fd);
 		if (!line)
 		{
 			ft_printf("Error\nCoudn't read line in populate_map()\n");
-			break ;
+			return (0);
 		}
 		lines_read++;
-		ft_strncpy(map[i], line, cols);
-		map[i][cols] = '\0';
+		ft_strncpy(game->map[i], line, game->cols);
+		if (!game->map[i])
+		{
+			ft_printf("Error\nCoudn't copy line to map[i]\n");
+			return (0);
+		}
+		game->map[i][game->cols] = '\0';
 		free(line);
 		i++;
 	}
 	return (lines_read);
 }
 
-char	**make_map(int fd, t_map *grid, char *filename)
+void	make_map(t_game *game)
 {
-	int		fd2;
-	char	**map;
-
-	if (!count_lines_and_columns(fd, grid))
-		return (NULL);
-	map = allocate_map(grid->rows, grid->cols);
-	if (!map)
-		return (NULL);
-	fd2 = open(filename, O_RDONLY);
-	if (populate_map(fd2, map, grid->rows, grid->cols) != grid->rows)
-		return (NULL);
-	close(fd2);
-	return (map);
+	if (!count_lines_and_columns(game))
+		cleanup(game, 1);
+	game->map = allocate_map(game);
+	if (!game->map)
+		cleanup(game, 1);
+	if (!populate_map(game))
+		cleanup(game, 1);
 }

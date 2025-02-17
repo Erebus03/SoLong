@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "utils.h"
 
 int	found_newline(t_gnl_list *node)
 {
@@ -98,8 +98,8 @@ void	create_list(t_gnl_list **lst, int fd)
 		new_node = ft_lstnew(NULL);
 		if (!new_node)
 			return ;
-		new_node->str = malloc((size_t)BUFFER_SIZE + 1);
-		bytes_read = read(fd, new_node->str, (size_t)BUFFER_SIZE);
+		new_node->str = malloc(2);
+		bytes_read = read(fd, new_node->str, 1);
 		if (bytes_read == -1 || bytes_read == 0)
 		{
 			free(new_node->str);
@@ -118,7 +118,7 @@ char	*get_next_line(int fd)
 	char				*extracted_line;
 
 	extracted_line = NULL;
-	if (fd < 0 || (size_t)BUFFER_SIZE <= 0)
+	if (fd < 0)
 	{
 		free(head);
 		return (NULL);

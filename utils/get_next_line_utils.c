@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "utils.h"
 
 t_gnl_list	*ft_lstlast(t_gnl_list *lst)
 {

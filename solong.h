@@ -18,9 +18,7 @@
 # endif
 
 # include "../minilibx-linux/mlx.h"
-# include "ft_printf/ft_printf.h"
 # include "utils/utils.h"
-# include "utils/get_next_line.h"
 # include <string.h>
 # include <stdio.h>
 # include <stdlib.h>
@@ -31,6 +29,7 @@ typedef struct s_paths
 	char	*floor;
 	char	*wall;
 	char	*exit;
+	char	*chained;
 	char	*enemy[2];
 	char	*coin[2];
 	char	*attack[4];
@@ -40,20 +39,21 @@ typedef struct s_paths
 	char	*p_left[2];
 }	t_paths;
 
-typedef struct s_vars
-{
-	int		p_pos[2];
-	int		player;
-	int		enemy;
-	int		exit;
-	int		coin;
-}	t_vars;
+// typedef struct s_vars
+// {
+// 	int		p_pos[2];
+// 	int		player;
+// 	int		enemy;
+// 	int		exit;
+// 	int		coin;
+// }	t_vars;
 
 typedef struct s_img
 {
 	void	*wall;
 	void	*floor;
 	void	*exit;
+	void	*chained;
 	void	*enemy[2];
 	void	*coin[2];
 	void	*attack[4];
@@ -64,76 +64,79 @@ typedef struct s_img
 
 }	t_img;
 
-typedef struct s_map
-{
-	int		rows;
-	int		cols;
-}	t_map;
+// typedef struct s_map
+// {
+// 	int		rows;
+// 	int		cols;
+// }	t_map;
 
 typedef struct s_game
 {
+	int		rows;
+	int		cols;
+	int		p_pos[2];
+	int		player;
+	int		enemy;
+	int		exit;
+	int		coin;
 	char	**map;
-	t_map	*grid;
-	t_vars	*var;
+	char	*filename;
 	t_img	*imgs;
 	int		fd;
 	void	*mlx;
 	void	*win;
 	int		frame;//	good % method
-}	t_game_info;
+}	t_game;
 
-/* floodfill funcs */
-void	flood_fill(t_map *grid, char **map, int x, int y);
-int		check_reachability(char **map, t_map *grid);
-int		all_is_reachable(int x, int y, t_map *grid, char *filename);
+/* floodfill.c */
+void	flood_fill(t_game *game, char **map_copy, int x, int y);
+int		check_reachability(char **map, t_game *game);
+int		all_is_reachable(t_game *game);
 
-/* map_checker funcs */
-void	free_map(char **map, int rows);
-int		error_handling(t_vars *variables);
-void	update_stats(char cell, int i, int j, t_vars *variables);
-int		check_boundries(int rows, int cols, char **map);
-int		is_map_valid(char **map, t_map *grid,
-			t_vars *variables, char *filename);
-int		check_cells(char **map, t_vars *vars, int rows, int cols);
+/* map_checker.c */
+int		error_handling(t_game *game);
+// void	update_stats(char cell, int i, int j, t_game *game);
+int		check_cells(t_game *game);
+int		check_boundries(t_game *game);
+int		is_map_valid(t_game *game);
 
-/* map making funcs */
-int		count_lines_and_columns(int fd, t_map *grid);
-char	**allocate_map(int rows, int cols);
-int		populate_map(int fd, char **map, int rows, int cols);
-char	**make_map(int fd, t_map *grid, char *filename);
+/* map maker.c */
+int		count_lines_and_columns(t_game *game);
+char	**allocate_map(t_game *game);
+int		populate_map(t_game *game);
+void	make_map(t_game *game);
+void	free_map(int rows, char **map);
 
 /* main */
-int		init_game(t_game_info *game, char *filename);
-int		check_args(int ac, char **av, t_game_info *game);
-void	cleanup(t_game_info *game);
-int		render_map(t_game_info *game, t_paths *paths);
+int		init_game(t_game *game);
+int		check_args(int ac, char **av, t_game *game);
+void	cleanup(t_game *game, int exitmode);
+int		render_map(t_game *game, t_paths *paths);
 
 /* display.c*/
-int		win_init(t_game_info *game, t_paths	**paths);
-int		put_image(t_game_info *g, char cell, int x, int y);
+int		win_init(t_game *game, t_paths	**paths);
+int		put_image(t_game *g, char cell, int x, int y);
 void	assigne_paths(t_paths **p);
-int		loop_init(t_game_info *game);
-int		key_input(int keycode, void *param);
+int		loop_init(t_game *game);
+int		key_input(int keycode, t_game *game);
 
 /* load_images.c */
-int		assigne_images(t_img **imgs, void *mlx_ptr, t_paths **paths);
-int		assigne_enemy_and_attack(t_img *img, void *mlxptr,
-			t_paths *path, int k);
-int		assigne_player_positions(t_img *img, void *mlxptr,
-			t_paths *path, int k);
+int		assigne_images(t_game *game, t_paths **paths);
+int		assigne_enemy_and_attack(t_img *img, void *mlxptr, t_paths *path, int k);
+int		assigne_player_positions(t_img *img, void *mlxptr, t_paths *path, int k);
 int		assigne_other(t_img *img, void *mlxptr, t_paths *path, int k);
 void	free_images(t_img *img, void *mlx_ptr);
 
-/* free_iamges */
+/* free_iamges.c */
 void	free_player(t_img *img, void *mlxptr);
 void	free_enemy_attack(t_img *img, void *mlxptr);
 void	free_c_w_f_e(t_img *img, void *mlxptr);
 
 /* mevemnt.c */
-int	move_player(t_game_info *game, char direction);
-int move_left(t_game_info *game, int x, int y);
-int move_right(t_game_info *game, int x, int y);
-int move_down(t_game_info *game, int x, int y);
-int move_up(t_game_info *game, int x, int y);
+int	move_player(t_game *game, char direction);
+int move_left(t_game *game, int x, int y);
+int move_right(t_game *game, int x, int y);
+int move_down(t_game *game, int x, int y);
+int move_up(t_game *game, int x, int y);
 
 #endif

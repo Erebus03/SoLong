@@ -12,7 +12,7 @@
 
 #include "solong.h"
 
-int	check_reachability(char **map, t_map *grid)
+int	check_reachability(char **map, t_game *game)
 {
 	int	i;
 	int	j;
@@ -20,15 +20,14 @@ int	check_reachability(char **map, t_map *grid)
 
 	i = 0;
 	return_value = 1;
-	while (i < grid->rows)
+	while (i < game->rows)
 	{
 		j = 0;
-		while (j < grid->cols)
+		while (j < game->cols)
 		{
-			if (map[i][j] == 'C' || map[i][j] == 'E')
+			if (map[i][j] == 'C')
 			{
-				ft_printf("Error\nPosition(%d, %d)[%c] is not reachable\n",
-					i, j, map[i][j]);
+				ft_printf("Error\nPosition(%d,%d) is not reachable\n", i, j); //remove this later
 				return_value = 0;
 			}
 			j++;
@@ -38,29 +37,71 @@ int	check_reachability(char **map, t_map *grid)
 	return (return_value);
 }
 
-void	flood_fill(t_map *grid, char **map, int x, int y)
+char	**copy_map(t_game *game)
 {
-	if (x < 0 || x >= grid->cols || y < 0 || y >= grid->rows)
-		return ;
-	if (map[y][x] == '1' || map[y][x] == 'V' || map[y][x] == 'N')
-		return ;
-	map[y][x] = 'V';
-	flood_fill(grid, map, x - 1, y);
-	flood_fill(grid, map, x + 1, y);
-	flood_fill(grid, map, x, y + 1);
-	flood_fill(grid, map, x, y - 1);
+	int		(i), (j);
+	char	**map;
+
+	map = malloc(game->rows * sizeof(char *));
+	if (!map)
+		return (NULL);
+	i = 0;
+	while (i < game->rows)
+	{
+		map[i] = malloc((game->cols + 1) * sizeof(char));
+		if (!map[i])
+			return (NULL);
+		i++;
+	}
+	i = 0;
+	while (i < game->rows)
+	{
+		j = 0;
+		while (j < game->cols)
+		{
+			map[i][j] = game->map[i][j];
+			j++;
+		}
+		map[i][j] = '\0';
+		i++;
+	}
+	return (map);
 }
 
-int	all_is_reachable(int x, int y, t_map *grid, char *filename)
+void	flood_fill(t_game *game, char **map_copy, int x, int y)
 {
-	int		fd;
-	char	**map_copy;
-	int		ret;
+	char	cell;
 
-	fd = open(filename, O_RDONLY);
-	map_copy = make_map(fd, grid, filename);
-	flood_fill(grid, map_copy, x, y);
-	ret = check_reachability(map_copy, grid);
-	free_map(map_copy, grid->rows);
+	if (x < 0 || x >= game->cols || y < 0 || y >= game->rows)
+		return ;
+	cell = map_copy[y][x];
+	if (cell == '1' || cell == 'V' || cell == 'N' || cell == 'E')
+		return ;
+	map_copy[y][x] = 'V';
+	flood_fill(game, map_copy, x - 1, y);
+	flood_fill(game, map_copy, x + 1, y);
+	flood_fill(game, map_copy, x, y + 1);
+	flood_fill(game, map_copy, x, y - 1);
+}
+
+int	all_is_reachable(t_game *game)
+{
+	int		(ret), (i);
+	char	**map_copy;
+
+	i = 0;
+	map_copy = NULL;
+	map_copy = copy_map(game);
+	
+	if (!map_copy)
+	{
+		free_map(game->rows, map_copy);
+		cleanup(game, 1);
+	}
+	flood_fill(game, map_copy, game->p_pos[0], game->p_pos[1]);
+	ret = check_reachability(map_copy, game);
+	while (i < game->rows)
+		free(map_copy[i++]);
+	free(map_copy);// double check
 	return (ret);
 }
