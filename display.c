@@ -40,25 +40,25 @@ int	put_image(t_game *g, char cell, int x, int y)
 	usleep(290);//		change it based on where your executing it
 	if (cell == '0')
 		return mlx_put_image_to_window(g->mlx, g->win, g->imgs->floor,
-			x * TILE, y * TILE);
+			x * 50, y * 50);
 	else if (cell == 'C')
 		return mlx_put_image_to_window(g->mlx, g->win, g->imgs->coin[g->frame % 2],
-				x * TILE, y * TILE);
+				x * 50, y * 50);
 	else if (cell == 'P')
 		return mlx_put_image_to_window(g->mlx, g->win, g->imgs->p_left[g->frame % 2],
-				x * TILE, y * TILE);
+				x * 50, y * 50);
 	else if (cell == 'E')
 	{
 		if (g->coin == 0)
 			return mlx_put_image_to_window(g->mlx, g->win, g->imgs->exit,
-					x * TILE, y * TILE);
+					x * 50, y * 50);
 		else
 			return mlx_put_image_to_window(g->mlx, g->win, g->imgs->chained,
-				x * TILE, y * TILE);
+				x * 50, y * 50);
 	}
 	else if (cell == 'N')
 		return mlx_put_image_to_window(g->mlx, g->win, g->imgs->enemy[g->frame % 2],
-				x * TILE, y * TILE); 
+				x * 50, y * 50); 
 	return (0);
 }
 
@@ -80,7 +80,7 @@ int	loop_init(t_game *g)
 			// no error check??
 			if (g->map[y][x] == '1')
 				mlx_put_image_to_window(g->mlx, g->win, g->imgs->wall,
-					x * TILE, y * TILE);
+					x * 50, y * 50);
 			else
 				put_image(g, g->map[y][x], x , y);// figure out frames and that
 			x++;
@@ -98,8 +98,8 @@ int	win_init(t_game *game, t_paths **path)
 		ft_printf("Error\nCouldn't assigne images!\n");
 		return (0);
 	}
-	game->win = mlx_new_window(game->mlx, game->cols * TILE,
-			game->rows * TILE, "Solong - hahahahah");
+	game->win = mlx_new_window(game->mlx, game->cols * 50,
+			game->rows * 50, "Solong - hahahahah");
 	return (1);
 }
 

@@ -13,10 +13,6 @@
 #ifndef SOLONG_H
 # define SOLONG_H
 
-# ifndef TILE
-#  define TILE 50
-# endif
-
 # include "../minilibx-linux/mlx.h"
 # include "utils/utils.h"
 # include <string.h>
