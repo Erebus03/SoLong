@@ -23,7 +23,7 @@ void	free_map(int rows, char **map)
 	{
 		if (map[i])
 			free(map[i]);
-		map[i] = NULL;//	watchout segfault
+		map[i] = NULL;
 		i++;
 	}
 	free(map);
@@ -98,17 +98,11 @@ int	populate_map(t_game *game)
 	{
 		line = get_next_line(game->fd);
 		if (!line)
-		{
-			ft_printf("Error\nCoudn't read line in populate_map()\n");
 			return (0);
-		}
 		lines_read++;
 		ft_strncpy(game->map[i], line, game->cols);
 		if (!game->map[i])
-		{
-			ft_printf("Error\nCoudn't copy line to map[i]\n");
 			return (0);
-		}
 		game->map[i][game->cols] = '\0';
 		free(line);
 		i++;
@@ -120,7 +114,7 @@ void	make_map(t_game *game)
 {
 	if (!count_lines_and_columns(game))
 		cleanup(game, 1);
-	game->map = allocate_map(game);
+	game->map = allocate_map(game);//	Add error msgs
 	if (!game->map)
 		cleanup(game, 1);
 	if (!populate_map(game))

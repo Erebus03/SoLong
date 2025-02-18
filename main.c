@@ -14,16 +14,13 @@
 
 void	cleanup(t_game *game, int exitmode)
 {
-	printf("cleaning up\n");
 	if (!game)
 		return ;
 	if (game->map)
 		free_map(game->rows, game->map);
 	game->map = NULL;
 	if (game->fd > 0)
-	{
 		close(game->fd);
-	}
 	if (game->imgs)
 	{
 		free_images(game->imgs, game->mlx);
@@ -35,16 +32,12 @@ void	cleanup(t_game *game, int exitmode)
 		if (game->win)
 			mlx_destroy_window(game->mlx, game->win);
 		game->win = NULL;
-		printf("window gone\n");
 		mlx_destroy_display(game->mlx);
-		printf("display gone, game.mlx = %p\n", game->mlx);
 		free(game->mlx);
 		game->mlx = NULL;
-		printf("mlx gone\n");
 	}
 	free(game);
 	game = NULL;
-	printf("out cleanup()\n");
 	exit(exitmode);
 }
 

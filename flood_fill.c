@@ -14,9 +14,7 @@
 
 int	check_reachability(char **map, t_game *game)
 {
-	int	i;
-	int	j;
-	int	return_value;
+	int	(i), (j), (return_value);
 
 	i = 0;
 	return_value = 1;
@@ -102,6 +100,6 @@ int	all_is_reachable(t_game *game)
 	ret = check_reachability(map_copy, game);
 	while (i < game->rows)
 		free(map_copy[i++]);
-	free(map_copy);// double check
+	free(map_copy);
 	return (ret);
 }

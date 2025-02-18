@@ -14,7 +14,6 @@
 
 void	free_images(t_img *img, void *mlxptr)
 {
-	printf("freeing imgs\n");//	remove
 	if (!img)
 		return ;
 	mlx_destroy_image(mlxptr, img->p_up[0]);
@@ -31,19 +30,19 @@ void	free_images(t_img *img, void *mlxptr)
 	mlx_destroy_image(mlxptr, img->attack[1]);
 	mlx_destroy_image(mlxptr, img->attack[2]);
 	mlx_destroy_image(mlxptr, img->attack[3]);
+	mlx_destroy_image(mlxptr, img->coin[0]);
+	mlx_destroy_image(mlxptr, img->coin[1]);
 	mlx_destroy_image(mlxptr, img->wall);
 	mlx_destroy_image(mlxptr, img->exit);
 	mlx_destroy_image(mlxptr, img->chained);
 	mlx_destroy_image(mlxptr, img->floor);
-	mlx_destroy_image(mlxptr, img->coin[0]);
-	mlx_destroy_image(mlxptr, img->coin[1]);
 }
 
 int	assigne_other(t_img *img, void *mlxptr, t_paths *path, int k)
 {
 	img->coin[0] = mlx_xpm_file_to_image(mlxptr, path->coin[0], &k, &k);
 	img->coin[1] = mlx_xpm_file_to_image(mlxptr, path->coin[1], &k, &k);
-	if (!(img->coin[0]) || !(img->coin[1]))
+	if (!(img->coin[0]) || !(img->coin[1]))//	remove check??
 	{
 		free_images(img, mlxptr);
 		return (0);
@@ -118,6 +117,11 @@ int	assigne_images(t_game *game, t_paths **paths)
 		ft_printf("Error:\nAllocation failed for t_imgs\n");
 		return (0);
 	}
+	//*ginfo = (t_game){0, 0, {0, 0}, 0, 0, 0, 0, NULL, NULL, NULL, -1, NULL, NULL, 0};
+	*(game->imgs) = (t_img){NULL, NULL, NULL, NULL, {NULL, NULL}, {NULL, NULL}
+		, {NULL, NULL}, {NULL, NULL}, {NULL, NULL}, {NULL, NULL}
+		, {NULL, NULL, NULL, NULL}};
+
 	if (!assigne_player_positions(game->imgs, game->mlx, *paths, k))
 		return (0);
 	if (!assigne_enemy_and_attack(game->imgs, game->mlx, *paths, k))

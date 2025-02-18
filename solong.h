@@ -35,15 +35,6 @@ typedef struct s_paths
 	char	*p_left[2];
 }	t_paths;
 
-// typedef struct s_vars
-// {
-// 	int		p_pos[2];
-// 	int		player;
-// 	int		enemy;
-// 	int		exit;
-// 	int		coin;
-// }	t_vars;
-
 typedef struct s_img
 {
 	void	*wall;
@@ -52,19 +43,13 @@ typedef struct s_img
 	void	*chained;
 	void	*enemy[2];
 	void	*coin[2];
-	void	*attack[4];
 	void	*p_up[2];
 	void	*p_down[2];
 	void	*p_right[2];
 	void	*p_left[2];
+	void	*attack[4];
 
 }	t_img;
-
-// typedef struct s_map
-// {
-// 	int		rows;
-// 	int		cols;
-// }	t_map;
 
 typedef struct s_game
 {
@@ -81,7 +66,7 @@ typedef struct s_game
 	int		fd;
 	void	*mlx;
 	void	*win;
-	int		frame;//	good % method
+	int		frame;
 }	t_game;
 
 /* floodfill.c */
@@ -90,8 +75,7 @@ int		check_reachability(char **map, t_game *game);
 int		all_is_reachable(t_game *game);
 
 /* map_checker.c */
-int		error_handling(t_game *game);
-// void	update_stats(char cell, int i, int j, t_game *game);
+// int		error_handling(t_game *game);
 int		check_cells(t_game *game);
 int		check_boundries(t_game *game);
 int		is_map_valid(t_game *game);
@@ -124,12 +108,12 @@ int		assigne_other(t_img *img, void *mlxptr, t_paths *path, int k);
 void	free_images(t_img *img, void *mlx_ptr);
 
 /* free_iamges.c */
-void	free_player(t_img *img, void *mlxptr);
-void	free_enemy_attack(t_img *img, void *mlxptr);
-void	free_c_w_f_e(t_img *img, void *mlxptr);
+// void	free_player(t_img *img, void *mlxptr);
+// void	free_enemy_attack(t_img *img, void *mlxptr);
+// void	free_c_w_f_e(t_img *img, void *mlxptr);
 
 /* mevemnt.c */
-int	move_player(t_game *game, char direction);
+// int	move_player(t_game *game, char direction);
 int move_left(t_game *game, int x, int y);
 int move_right(t_game *game, int x, int y);
 int move_down(t_game *game, int x, int y);
