@@ -13,7 +13,7 @@
 #ifndef UTILS_H
 # define UTILS_H
 
-#include <stddef.h>
+# include <stddef.h>
 # include <string.h>
 # include <unistd.h>
 # include <fcntl.h>
@@ -40,14 +40,13 @@ void		create_t_gnl_list(t_gnl_list **lst, int fd);
 void		clean(t_gnl_list **lst);
 
 /* printf functions */
-int	ft_printf(const char *input, ...);
-int	put_s(char *s);
-int	put_nb(int n);
+int			ft_printf(const char *input, ...);
+int			put_s(char *s);
+int			put_nb(int n);
 
 /* other funtions */
-size_t	ft_strlen(const char *str);
-char	*ft_strncpy(char *dest, char *src, unsigned int n);
-int		ft_strncmp(const char *s1, const char *s2, size_t n);
-
+size_t		ft_strlen(const char *str);
+char		*ft_strncpy(char *dest, char *src, unsigned int n);
+int			ft_strncmp(const char *s1, const char *s2, size_t n);
 
 #endif

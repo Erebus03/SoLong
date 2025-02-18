@@ -96,7 +96,7 @@ int	render_map(t_game *game, t_paths *paths)
 int	main(int ac, char **av)
 {
 	t_game	*ginfo;
-	t_paths		paths;
+	t_paths	paths;
 
 	ginfo = malloc(sizeof(t_game));
 	if (!ginfo)
@@ -104,7 +104,8 @@ int	main(int ac, char **av)
 		ft_printf("Error\nMemory allocation failed for game\n");
 		return (1);
 	}
-	*ginfo = (t_game){0, 0, {0, 0}, 0, 0, 0, 0, NULL, NULL, NULL, -1, NULL, NULL, 0};
+	*ginfo = (t_game){0, 0, {0, 0}, 0, 0, 0, 0,
+		NULL, NULL, NULL, -1, NULL, NULL, 0};
 	if (!check_args(ac, av, ginfo))
 		cleanup(ginfo, 1);
 	ginfo->filename = av[1];

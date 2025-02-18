@@ -13,7 +13,7 @@
 #ifndef SOLONG_H
 # define SOLONG_H
 
-# include "../minilibx-linux/mlx.h"
+# include <mlx.h>
 # include "utils/utils.h"
 # include <string.h>
 # include <stdio.h>
@@ -102,21 +102,17 @@ int		key_input(int keycode, t_game *game);
 
 /* load_images.c */
 int		assigne_images(t_game *game, t_paths **paths);
-int		assigne_enemy_and_attack(t_img *img, void *mlxptr, t_paths *path, int k);
-int		assigne_player_positions(t_img *img, void *mlxptr, t_paths *path, int k);
+int		assigne_enemy_and_attack(t_img *img, void *mlxptr,
+			t_paths *path, int k);
+int		assigne_player_positions(t_img *img, void *mlxptr,
+			t_paths *path, int k);
 int		assigne_other(t_img *img, void *mlxptr, t_paths *path, int k);
 void	free_images(t_img *img, void *mlx_ptr);
 
-/* free_iamges.c */
-// void	free_player(t_img *img, void *mlxptr);
-// void	free_enemy_attack(t_img *img, void *mlxptr);
-// void	free_c_w_f_e(t_img *img, void *mlxptr);
-
 /* mevemnt.c */
-// int	move_player(t_game *game, char direction);
-int move_left(t_game *game, int x, int y);
-int move_right(t_game *game, int x, int y);
-int move_down(t_game *game, int x, int y);
-int move_up(t_game *game, int x, int y);
+int		move_left(t_game *game, int x, int y);
+int		move_right(t_game *game, int x, int y);
+int		move_down(t_game *game, int x, int y);
+int		move_up(t_game *game, int x, int y);
 
 #endif

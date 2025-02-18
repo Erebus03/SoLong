@@ -49,8 +49,7 @@ void	update_stats(char cell, int i, int j, t_game *game)
 
 int	check_cells(t_game *game)
 {
-	int		(i), (j);
-
+	int (i), (j);
 	if (!game)
 		return (0);
 	i = -1;
@@ -62,11 +61,10 @@ int	check_cells(t_game *game)
 	}
 	return (1);
 }
-	
+
 int	check_boundries(t_game *game)
 {
-	int	(i), (j);
-
+	int (i), (j);
 	i = 0;
 	j = 0;
 	while (i < game->rows)
@@ -79,7 +77,7 @@ int	check_boundries(t_game *game)
 				if (game->map[i][j] != '1')
 				{
 					ft_printf("Error\nNeed a wall at (%d, %d)\n", i, j);
-					cleanup(game, 1);// removed areturn here to exit with cleaup
+					cleanup(game, 1);
 				}
 			}
 			j++;
@@ -101,7 +99,7 @@ int	is_map_valid(t_game *game)
 		ft_printf("Error\nMap elements ain't valid (1P, 1E, >=1C, >=1N)");
 		cleanup(game, 1);
 	}
-	if (all_is_reachable(game) == 0) //flood_fill
+	if (all_is_reachable(game) == 0)
 		return (0);
 	return (1);
 }

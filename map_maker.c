@@ -48,7 +48,7 @@ int	count_lines_and_columns(t_game *game)
 		{
 			free(line);
 			ft_printf("Error\nMap ain't rectangular!\n");
-			return 0;
+			return (0);
 		}
 		(game->rows)++;
 		free(line);

@@ -12,11 +12,11 @@
 
 #include "solong.h"
 
-# define UP 65362
-# define DOWN 65364
-# define RIGHT 65363
-# define LEFT 65361
-# define CLOSE 65307
+#define UP 65362
+#define DOWN 65364
+#define RIGHT 65363
+#define LEFT 65361
+#define CLOSE 65307
 
 int	key_input(int key, t_game *game)
 {
@@ -30,7 +30,7 @@ int	key_input(int key, t_game *game)
 		move_left(game, game->p_pos[0], game->p_pos[1]);
 	if (key == CLOSE)
 		cleanup(game, 0);
-    return (0);
+	return (0);
 }
 
 int	put_image(t_game *g, char cell, int x, int y)
@@ -39,38 +39,35 @@ int	put_image(t_game *g, char cell, int x, int y)
 		return (0);
 	usleep(290);//		change it based on where your executing it
 	if (cell == '0')
-		return mlx_put_image_to_window(g->mlx, g->win, g->imgs->floor,
-			x * 50, y * 50);
+		return (mlx_put_image_to_window(g->mlx, g->win, g->imgs->floor,
+				x * 50, y * 50));
 	else if (cell == 'C')
-		return mlx_put_image_to_window(g->mlx, g->win, g->imgs->coin[g->frame % 2],
-				x * 50, y * 50);
+		return (mlx_put_image_to_window(g->mlx, g->win
+				, g->imgs->coin[g->frame % 2], x * 50, y * 50));
 	else if (cell == 'P')
-		return mlx_put_image_to_window(g->mlx, g->win, g->imgs->p_left[g->frame % 2],
-				x * 50, y * 50);
+		return (mlx_put_image_to_window(g->mlx, g->win
+				, g->imgs->p_left[g->frame % 2], x * 50, y * 50));
 	else if (cell == 'E')
 	{
 		if (g->coin == 0)
-			return mlx_put_image_to_window(g->mlx, g->win, g->imgs->exit,
-					x * 50, y * 50);
+			return (mlx_put_image_to_window(g->mlx, g->win, g->imgs->exit,
+					x * 50, y * 50));
 		else
-			return mlx_put_image_to_window(g->mlx, g->win, g->imgs->chained,
-				x * 50, y * 50);
+			return (mlx_put_image_to_window(g->mlx, g->win, g->imgs->chained,
+					x * 50, y * 50));
 	}
 	else if (cell == 'N')
-		return mlx_put_image_to_window(g->mlx, g->win, g->imgs->enemy[g->frame % 2],
-				x * 50, y * 50); 
+		return (mlx_put_image_to_window(g->mlx, g->win
+				, g->imgs->enemy[g->frame % 2], x * 50, y * 50));
 	return (0);
 }
 
 int	loop_init(t_game *g)
 {
-	int	x;
-	int	y;
-	
+	int (x), (y);
 	g->frame++;
 	if (g->frame >= 12)
 		g->frame = 0;
-
 	y = 0;
 	while (y < g->rows)
 	{
@@ -82,7 +79,7 @@ int	loop_init(t_game *g)
 				mlx_put_image_to_window(g->mlx, g->win, g->imgs->wall,
 					x * 50, y * 50);
 			else
-				put_image(g, g->map[y][x], x , y);// figure out frames and that
+				put_image(g, g->map[y][x], x, y);// figure out frames and that
 			x++;
 		}
 		y++;

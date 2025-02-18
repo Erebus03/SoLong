@@ -55,10 +55,9 @@ int	put_s(char *s)
 
 int	ft_printf(const char *input, ...)
 {
-	va_list		args;
-	int			count;
-	int			i;
+	va_list	args;
 
+	int (count), (i);
 	i = 0;
 	count = 0;
 	if (input == NULL)
@@ -70,8 +69,7 @@ int	ft_printf(const char *input, ...)
 			return (-1);
 		else if (input[i] == '%')
 		{
-			++i;
-			if (input[i] == 's')
+			if (input[++i] == 's')
 				count += put_s(va_arg(args, char *));
 			else if (input[i] == 'd' || input[i] == 'i')
 				count += put_nb(va_arg(args, int));

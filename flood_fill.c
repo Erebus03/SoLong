@@ -14,8 +14,7 @@
 
 int	check_reachability(char **map, t_game *game)
 {
-	int	(i), (j), (return_value);
-
+	int (i), (j), (return_value);
 	i = 0;
 	return_value = 1;
 	while (i < game->rows)
@@ -25,7 +24,8 @@ int	check_reachability(char **map, t_game *game)
 		{
 			if (map[i][j] == 'C')
 			{
-				ft_printf("Error\nPosition(%d,%d) is not reachable\n", i, j); //remove this later
+				//remove this later
+				ft_printf("Error\nPosition(%d,%d) is not reachable\n", i, j);
 				return_value = 0;
 			}
 			j++;
@@ -37,9 +37,9 @@ int	check_reachability(char **map, t_game *game)
 
 char	**copy_map(t_game *game)
 {
-	int		(i), (j);
 	char	**map;
 
+	int (i), (j);
 	map = malloc(game->rows * sizeof(char *));
 	if (!map)
 		return (NULL);
@@ -51,17 +51,13 @@ char	**copy_map(t_game *game)
 			return (NULL);
 		i++;
 	}
-	i = 0;
-	while (i < game->rows)
+	i = -1;
+	while (++i < game->rows)
 	{
-		j = 0;
-		while (j < game->cols)
-		{
+		j = -1;
+		while (++j < game->cols)
 			map[i][j] = game->map[i][j];
-			j++;
-		}
 		map[i][j] = '\0';
-		i++;
 	}
 	return (map);
 }
@@ -84,13 +80,12 @@ void	flood_fill(t_game *game, char **map_copy, int x, int y)
 
 int	all_is_reachable(t_game *game)
 {
-	int		(ret), (i);
 	char	**map_copy;
 
+	int (ret), (i);
 	i = 0;
 	map_copy = NULL;
 	map_copy = copy_map(game);
-	
 	if (!map_copy)
 	{
 		free_map(game->rows, map_copy);
