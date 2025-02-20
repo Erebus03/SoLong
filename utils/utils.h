@@ -45,8 +45,12 @@ int			put_s(char *s);
 int			put_nb(int n);
 
 /* other funtions */
+char		*ft_strrchr(char *s, int c);
 size_t		ft_strlen(const char *str);
 char		*ft_strncpy(char *dest, char *src, unsigned int n);
 int			ft_strncmp(const char *s1, const char *s2, size_t n);
+char		*ft_strjoin(char *s1, char *s2);
+char		*ft_itoa(unsigned int n);
+
 
 #endif

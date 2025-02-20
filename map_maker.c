@@ -35,9 +35,9 @@ int	count_lines_and_columns(t_game *game)
 	char	*line;
 	int		line_len;
 
-	game->rows = 0;
-	game->cols = 0;
 	game->fd = open(game->filename, O_RDONLY);
+	if (game->fd == -1)
+		return (0);
 	line = get_next_line(game->fd);
 	while (line != NULL)
 	{
@@ -47,8 +47,7 @@ int	count_lines_and_columns(t_game *game)
 		else if (line_len != game->cols)
 		{
 			free(line);
-			ft_printf("Error\nMap ain't rectangular!\n");
-			return (0);
+			return (-1);
 		}
 		(game->rows)++;
 		free(line);
@@ -66,7 +65,7 @@ char	**allocate_map(t_game *game)
 	game->map = malloc(game->rows * sizeof(char *));
 	if (!game->map)
 	{
-		ft_printf("Error\nFailed to allocate memory for map rows");
+		ft_printf("Error\nFailed to allocate memory for map rows\n");
 		return (NULL);
 	}
 	i = 0;
@@ -75,7 +74,7 @@ char	**allocate_map(t_game *game)
 		game->map[i] = malloc((game->cols + 1));
 		if (!game->map[i])
 		{
-			ft_printf("Error\nFailed to allocate memory for map columns");
+			ft_printf("Error\nFailed to allocate memory for map columns\n");
 			free_map(game->rows, game->map);
 			return (NULL);
 		}
@@ -87,13 +86,14 @@ char	**allocate_map(t_game *game)
 int	populate_map(t_game *game)
 {
 	char	*line;
-	int		lines_read;
-	int		i;
 
+	int (lines_read), (i);
 	line = NULL;
 	lines_read = 0;
 	i = 0;
 	game->fd = open(game->filename, O_RDONLY);
+	if (game->fd == -1)
+		return (0);
 	while (i < game->rows)
 	{
 		line = get_next_line(game->fd);
@@ -112,11 +112,31 @@ int	populate_map(t_game *game)
 
 void	make_map(t_game *game)
 {
-	if (!count_lines_and_columns(game))
+	int	res;
+
+	res = count_lines_and_columns(game);
+	if (res == -1)
+	{
+		ft_printf("Error\nMap ain't rectangular!\n");
 		cleanup(game, 1);
-	game->map = allocate_map(game);//	Add error msgs
+	}
+	else if (res == 0)
+	{
+		if (game->fd == -1)
+			ft_printf("Error\nFailed to open the file\n");
+		else
+			ft_printf("Error\nFailed to count the grid\n");
+		cleanup(game, 1);
+	}
+	game->map = allocate_map(game);
 	if (!game->map)
 		cleanup(game, 1);
 	if (!populate_map(game))
+	{
+		if (game->fd == -1)
+			ft_printf("Error\nFailed to open the file\n");
+		else
+			ft_printf("Error\nFailed to populate the map\n");
 		cleanup(game, 1);
+	}
 }

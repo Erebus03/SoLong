@@ -96,7 +96,7 @@ int	is_map_valid(t_game *game)
 	if (game->player != 1 || game->exit != 1
 		|| game->coin < 1 || game->enemy < 1)
 	{
-		ft_printf("Error\nMap elements ain't valid (1P, 1E, >=1C, >=1N)");
+		ft_printf("Error\nMap elements ain't valid (1P, 1E, >=1C, >=1N)\n");
 		cleanup(game, 1);
 	}
 	if (all_is_reachable(game) == 0)

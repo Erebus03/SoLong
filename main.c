@@ -12,10 +12,10 @@
 
 #include "solong.h"
 
-void	cleanup(t_game *game, int exitmode)
+int	cleanup(t_game *game, int exitmode)
 {
 	if (!game)
-		return ;
+		return (0);
 	if (game->map)
 		free_map(game->rows, game->map);
 	game->map = NULL;
@@ -41,28 +41,26 @@ void	cleanup(t_game *game, int exitmode)
 	exit(exitmode);
 }
 
-int	check_args(int ac, char **av, t_game *game)
+int	check_args(int ac, char **av)
 {
+	char	*file;
 	if (ac != 2)
 	{
 		ft_printf("Error\nValid args: %s <map file name>\n", av[0]);
 		return (0);
 	}
-	if (ft_strncmp((av[1] + (ft_strlen(av[1]) - 4)), ".ber", 4) != 0)
+	if (ft_strncmp((av[1] + (ft_strlen(av[1]) - 4)), ".ber", 4) == 0)
+	{
+		file = ft_strrchr(av[1], '/') + 1;
+		if (file[0] == '.')
+		{
+			ft_printf("Error\nHidden file not allowed\n");
+			return (0);
+		}
+	}
+	else
 	{
 		ft_printf("Error\nFile must end with .ber\n");
-		return (0);
-	}
-	if (av[1][0] == '.' && av[1][1] != '.' &&
-		av[1][0] != '/' && ft_strncmp(av[1], ".ber", 4) != 0) //	remove ../ 
-	{
-		ft_printf("Error\nHidden file not allowed\n");
-		return (0);
-	}
-	game->fd = open(av[1], O_RDONLY);
-	if (game->fd == -1)
-	{
-		perror("Error\nFailed to open file");
 		return (0);
 	}
 	return (1);
@@ -79,17 +77,25 @@ int	init_game(t_game *game)
 		cleanup(game, 1);
 	}
 	if (!is_map_valid(game))
+	{
+		ft_printf("Error\nMap ain't valid\n");
 		cleanup(game, 1);
-	return (1);
+	}	return (1);
 }
 
 int	render_map(t_game *game, t_paths *paths)
 {
 	game->mlx = mlx_init();
 	if (!game->mlx)
-		printf("mlx_init failed\n");
+	{
+		ft_printf("Error\nFunction mlx_init() failed\n");
+		cleanup(game, 1);
+	}
 	if (!win_init(game, &paths))
-		return (0);
+	{
+		ft_printf("Error\nFailed to initialize window\n");
+		cleanup(game, 1);
+	}
 	return (1);
 }
 
@@ -104,15 +110,16 @@ int	main(int ac, char **av)
 		ft_printf("Error\nMemory allocation failed for game\n");
 		return (1);
 	}
-	*ginfo = (t_game){0, 0, {0, 0}, 0, 0, 0, 0,
-		NULL, NULL, NULL, -1, NULL, NULL, 0};
-	if (!check_args(ac, av, ginfo))
+	*ginfo = (t_game){-1, 0, 0, 0, 0, 0, 0, 0, 0, {0, 0},
+		0, 0, NULL, NULL, NULL, NULL, NULL};
+	if (!check_args(ac, av))
 		cleanup(ginfo, 1);
 	ginfo->filename = av[1];
 	init_game(ginfo);
 	render_map(ginfo, &paths);
 	mlx_key_hook(ginfo->win, key_input, ginfo);
 	mlx_loop_hook(ginfo->mlx, loop_init, ginfo);
+	mlx_hook(ginfo->win, 17, 0, cleanup, ginfo);
 	mlx_loop(ginfo->mlx);
 	cleanup(ginfo, 0);
 	return (0);

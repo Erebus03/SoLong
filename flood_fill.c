@@ -14,25 +14,20 @@
 
 int	check_reachability(char **map, t_game *game)
 {
-	int (i), (j), (return_value);
+	int (i), (j);
 	i = 0;
-	return_value = 1;
 	while (i < game->rows)
 	{
 		j = 0;
 		while (j < game->cols)
 		{
 			if (map[i][j] == 'C')
-			{
-				//remove this later
-				ft_printf("Error\nPosition(%d,%d) is not reachable\n", i, j);
-				return_value = 0;
-			}
+				return (0);
 			j++;
 		}
 		i++;
 	}
-	return (return_value);
+	return (1);
 }
 
 char	**copy_map(t_game *game)

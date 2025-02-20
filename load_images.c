@@ -16,10 +16,6 @@ void	free_images(t_img *img, void *mlxptr)
 {
 	if (!img)
 		return ;
-	mlx_destroy_image(mlxptr, img->p_up[0]);
-	mlx_destroy_image(mlxptr, img->p_up[1]);
-	mlx_destroy_image(mlxptr, img->p_down[0]);
-	mlx_destroy_image(mlxptr, img->p_down[1]);
 	mlx_destroy_image(mlxptr, img->p_right[0]);
 	mlx_destroy_image(mlxptr, img->p_right[1]);
 	mlx_destroy_image(mlxptr, img->p_left[0]);
@@ -34,6 +30,7 @@ void	free_images(t_img *img, void *mlxptr)
 	mlx_destroy_image(mlxptr, img->coin[1]);
 	mlx_destroy_image(mlxptr, img->wall);
 	mlx_destroy_image(mlxptr, img->exit);
+	mlx_destroy_image(mlxptr, img->empty_bg);
 	mlx_destroy_image(mlxptr, img->chained);
 	mlx_destroy_image(mlxptr, img->floor);
 }
@@ -51,7 +48,8 @@ int	assigne_other(t_img *img, void *mlxptr, t_paths *path, int k)
 	img->floor = mlx_xpm_file_to_image(mlxptr, path->floor, &k, &k);
 	img->exit = mlx_xpm_file_to_image(mlxptr, path->exit, &k, &k);
 	img->chained = mlx_xpm_file_to_image(mlxptr, path->chained, &k, &k);
-	if (!(img->wall) || !(img->floor) || !(img->exit))
+	img->empty_bg = mlx_xpm_file_to_image(mlxptr, path->empty_bg, &k, &k);
+	if (!(img->wall) || !(img->floor) || !(img->exit) || !(img->empty_bg))
 	{
 		free_images(img, mlxptr);
 		return (0);
@@ -61,16 +59,6 @@ int	assigne_other(t_img *img, void *mlxptr, t_paths *path, int k)
 
 int	assigne_player_positions(t_img *img, void *mlxptr, t_paths *path, int k)
 {
-	img->p_up[0] = mlx_xpm_file_to_image(mlxptr, path->p_up[0], &k, &k);
-	img->p_up[1] = mlx_xpm_file_to_image(mlxptr, path->p_up[1], &k, &k);
-	img->p_down[0] = mlx_xpm_file_to_image(mlxptr, path->p_down[0], &k, &k);
-	img->p_down[1] = mlx_xpm_file_to_image(mlxptr, path->p_down[1], &k, &k);
-	if (!(img->p_up[0]) || !(img->p_up[1])
-		|| !(img->p_down[0]) || !(img->p_down[1]))
-	{
-		free_images(img, mlxptr);
-		return (0);
-	}
 	img->p_right[0] = mlx_xpm_file_to_image(mlxptr, path->p_right[0], &k, &k);
 	img->p_right[1] = mlx_xpm_file_to_image(mlxptr, path->p_right[1], &k, &k);
 	img->p_left[0] = mlx_xpm_file_to_image(mlxptr, path->p_left[0], &k, &k);
@@ -117,9 +105,10 @@ int	assigne_images(t_game *game, t_paths **paths)
 		ft_printf("Error:\nAllocation failed for t_imgs\n");
 		return (0);
 	}
-	*(game->imgs) = (t_img){NULL, NULL, NULL, NULL, {NULL, NULL}, {NULL, NULL},
-	{NULL, NULL}, {NULL, NULL}, {NULL, NULL}, {NULL, NULL},
-	{NULL, NULL, NULL, NULL}};
+	// remove attack
+	*(game->imgs) = (t_img){NULL, NULL, NULL, NULL,
+	NULL, {NULL, NULL}, {NULL, NULL}, {NULL, NULL},
+	{NULL, NULL}, {NULL, NULL, NULL, NULL}};
 	if (!assigne_player_positions(game->imgs, game->mlx, *paths, k))
 		return (0);
 	if (!assigne_enemy_and_attack(game->imgs, game->mlx, *paths, k))

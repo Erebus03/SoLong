@@ -9,11 +9,11 @@ UTILS = $(UTILS_DIR)libutils.a
 # Utils source files
 UTILS_SRCS = utils/ft_strncpy.c utils/ft_strlen.c utils/ft_strncmp.c \
 				utils/get_next_line_utils.c utils/get_next_line.c \
-				utils/ft_printf.c 
+				utils/ft_printf.c utils/ft_strrchr.c utils/ft_itoa.c utils/ft_strjoin.c
 UTILS_OBJS = $(UTILS_SRCS:.c=.o)
 
 # Source files for so_long
-SRCS = main.c flood_fill.c map_checker.c map_maker.c display.c load_images.c free_images.c movement.c
+SRCS = main.c flood_fill.c map_checker.c map_maker.c display.c load_images.c movement.c score_output.c
 OBJS = $(SRCS:.c=.o)
 
 # All object files combined
@@ -50,11 +50,6 @@ $(NAME): libs $(UTILS_OBJS) $(OBJS)
 # Compile main object files
 %.o: %.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-
-
-#	REMOVE THIS SHIT
-testmap: libs
-	cc map_maker.c map_checker.c tests/testmap.c flood_fill.c $(LIBS)  -o tests/testmap
 
 clean:
 	$(RM) $(ALL_OBJS)

@@ -13,7 +13,7 @@
 #ifndef SOLONG_H
 # define SOLONG_H
 
-# include <mlx.h>
+# include "../minilibx-linux/mlx.h"
 # include "utils/utils.h"
 # include <string.h>
 # include <stdio.h>
@@ -25,12 +25,11 @@ typedef struct s_paths
 	char	*floor;
 	char	*wall;
 	char	*exit;
+	char	*empty_bg;
 	char	*chained;
 	char	*enemy[2];
 	char	*coin[2];
 	char	*attack[4];
-	char	*p_up[2];
-	char	*p_down[2];
 	char	*p_right[2];
 	char	*p_left[2];
 }	t_paths;
@@ -40,11 +39,10 @@ typedef struct s_img
 	void	*wall;
 	void	*floor;
 	void	*exit;
+	void	*empty_bg;
 	void	*chained;
 	void	*enemy[2];
 	void	*coin[2];
-	void	*p_up[2];
-	void	*p_down[2];
 	void	*p_right[2];
 	void	*p_left[2];
 	void	*attack[4];
@@ -53,20 +51,23 @@ typedef struct s_img
 
 typedef struct s_game
 {
+	int		fd;
 	int		rows;
 	int		cols;
-	int		p_pos[2];
-	int		player;
-	int		enemy;
-	int		exit;
 	int		coin;
+	int		collected;
+	int		exit;
+	int		enemy;
+	int		player;
+	int		direction;
+	int		p_pos[2];
+	int		moves;
+	int		frame;
 	char	**map;
 	char	*filename;
-	t_img	*imgs;
-	int		fd;
 	void	*mlx;
 	void	*win;
-	int		frame;
+	t_img	*imgs;
 }	t_game;
 
 /* floodfill.c */
@@ -75,7 +76,6 @@ int		check_reachability(char **map, t_game *game);
 int		all_is_reachable(t_game *game);
 
 /* map_checker.c */
-// int		error_handling(t_game *game);
 int		check_cells(t_game *game);
 int		check_boundries(t_game *game);
 int		is_map_valid(t_game *game);
@@ -88,15 +88,15 @@ void	make_map(t_game *game);
 void	free_map(int rows, char **map);
 
 /* main */
+int		cleanup(t_game *game, int exitmode);
+int		check_args(int ac, char **av);
 int		init_game(t_game *game);
-int		check_args(int ac, char **av, t_game *game);
-void	cleanup(t_game *game, int exitmode);
 int		render_map(t_game *game, t_paths *paths);
 
 /* display.c*/
 int		win_init(t_game *game, t_paths	**paths);
 int		put_image(t_game *g, char cell, int x, int y);
-void	assigne_paths(t_paths **p);
+int		assigne_paths(t_paths **p);
 int		loop_init(t_game *game);
 int		key_input(int keycode, t_game *game);
 
@@ -114,5 +114,11 @@ int		move_left(t_game *game, int x, int y);
 int		move_right(t_game *game, int x, int y);
 int		move_down(t_game *game, int x, int y);
 int		move_up(t_game *game, int x, int y);
+void	attack(t_game *game, int x, int y);
+
+/* score_display.c */
+char	*display_coins_eaten(t_game *game);
+char	*display_moves(t_game *game);
+void	update_score_display(t_game *game);
 
 #endif
