@@ -39,17 +39,13 @@ int	assigne_other(t_img *img, void *mlxptr, t_paths *path, int k)
 {
 	img->coin[0] = mlx_xpm_file_to_image(mlxptr, path->coin[0], &k, &k);
 	img->coin[1] = mlx_xpm_file_to_image(mlxptr, path->coin[1], &k, &k);
-	if (!(img->coin[0]) || !(img->coin[1])) //	remove check??
-	{
-		free_images(img, mlxptr);
-		return (0);
-	}
 	img->wall = mlx_xpm_file_to_image(mlxptr, path->wall, &k, &k);
 	img->floor = mlx_xpm_file_to_image(mlxptr, path->floor, &k, &k);
 	img->exit = mlx_xpm_file_to_image(mlxptr, path->exit, &k, &k);
 	img->chained = mlx_xpm_file_to_image(mlxptr, path->chained, &k, &k);
 	img->empty_bg = mlx_xpm_file_to_image(mlxptr, path->empty_bg, &k, &k);
-	if (!(img->wall) || !(img->floor) || !(img->exit) || !(img->empty_bg))
+	if (!(img->wall) || !(img->floor) || !(img->exit) || !(img->empty_bg)
+		|| !(img->coin[0]) || !(img->coin[1]) || !(img->chained))
 	{
 		free_images(img, mlxptr);
 		return (0);
@@ -76,17 +72,12 @@ int	assigne_enemy_and_attack(t_img *img, void *mlxptr, t_paths *path, int k)
 {
 	img->enemy[0] = mlx_xpm_file_to_image(mlxptr, path->enemy[0], &k, &k);
 	img->enemy[1] = mlx_xpm_file_to_image(mlxptr, path->enemy[1], &k, &k);
-	if (!(img->enemy[0]) || !(img->enemy[1]))
-	{
-		free_images(img, mlxptr);
-		return (0);
-	}
 	img->attack[0] = mlx_xpm_file_to_image(mlxptr, path->attack[0], &k, &k);
 	img->attack[1] = mlx_xpm_file_to_image(mlxptr, path->attack[1], &k, &k);
 	img->attack[2] = mlx_xpm_file_to_image(mlxptr, path->attack[2], &k, &k);
 	img->attack[3] = mlx_xpm_file_to_image(mlxptr, path->attack[3], &k, &k);
 	if (!(img->attack[0]) || !(img->attack[1]) || !(img->attack[2])
-		|| !(img->attack[3]))
+		|| !(img->attack[3]) || !(img->enemy[0]) || !(img->enemy[1]))
 	{
 		free_images(img, mlxptr);
 		return (0);

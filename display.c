@@ -30,7 +30,7 @@ int	key_input(int key, t_game *game)
 
 int	put_image(t_game *g, char cell, int x, int y)
 {
-	if (g->c_delay >= 100000)
+	if (g->c_delay >= 150000)// adapt it
 	{
 		g->c_frame++;
 		g->c_delay = 0;
@@ -63,53 +63,15 @@ int	put_image(t_game *g, char cell, int x, int y)
 			return (mlx_put_image_to_window(g->mlx, g->win, g->imgs->chained,
 					x * 50, y * 50));
 	}
-	if (g->n_delay >= 17500) // Adjust this value for smoother animation
+	if (g->n_delay >= 40000)
 	{
 		g->n_frame++;
-		g->n_delay = 0; // Reset the delay counter
+		g->n_delay = 0;
 	}
 	g->n_delay++;
-
 	if (cell == 'N')
 		return (mlx_put_image_to_window(g->mlx, g->win
 			, g->imgs->enemy[g->n_frame % 2], x * 50, y * 50));
-	return (0);
-}
-
-int	put_image2(t_game *g, char cell, int x, int y)
-{
-	if (cell == 'C')
-		g->c_delay += 1;
-	// if(g->c_delay == 0)
-		// printf("zero delay = %d\n", g->c_delay);
-	if (cell == 'C' && (g->c_delay == 0 || g->c_delay > 500000)) // adapt to linux
-	{
-		// if(g->c_delay == 0)
-		// 	printf("first delaay zero delay = %d\n", g->c_delay);
-		// printf("innn          delay = %d\n", g->c_delay);
-		g->c_delay = 0;
-		// printf("innn          delay = %d\n", g->c_delay);
-		return (mlx_put_image_to_window(g->mlx, g->win
-				, g->imgs->coin[g->frame % 2], x * 50, y * 50));
-	}
-	else if (cell == 'P' && g->direction == 0)
-		return (mlx_put_image_to_window(g->mlx, g->win
-				, g->imgs->p_left[g->frame % 2], x * 50, y * 50));
-	else if (cell == 'P' && g->direction == 1)
-		return (mlx_put_image_to_window(g->mlx, g->win
-				, g->imgs->p_right[g->frame % 2], x * 50, y * 50));
-	else if (cell == 'E')
-	{
-		if (g->coin == g->collected)
-			return (mlx_put_image_to_window(g->mlx, g->win, g->imgs->exit,
-					x * 50, y * 50));
-		else
-			return (mlx_put_image_to_window(g->mlx, g->win, g->imgs->chained,
-					x * 50, y * 50));
-	}
-	else if (cell == 'N')
-		return (mlx_put_image_to_window(g->mlx, g->win
-				, g->imgs->enemy[g->frame % 2], x * 50, y * 50));
 	return (0);
 }
 
