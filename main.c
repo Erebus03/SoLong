@@ -85,6 +85,7 @@ int	init_game(t_game *game)
 
 int	render_map(t_game *game, t_paths *paths)
 {
+	int (i), (j);
 	game->mlx = mlx_init();
 	if (!game->mlx)
 	{
@@ -95,6 +96,17 @@ int	render_map(t_game *game, t_paths *paths)
 	{
 		ft_printf("Error\nFailed to initialize window\n");
 		cleanup(game, 1);
+	}
+	i = -1;
+	while (++i < game->rows)
+	{
+		j = -1;
+		while (++j < game->cols)
+		{
+			if (game->map[i][j] == '1')
+				mlx_put_image_to_window(game->mlx, game->win, game->imgs->wall,
+					j * 50, i * 50);
+		}
 	}
 	return (1);
 }
@@ -111,7 +123,7 @@ int	main(int ac, char **av)
 		return (1);
 	}
 	*ginfo = (t_game){-1, 0, 0, 0, 0, 0, 0, 0, 0, {0, 0},
-		0, 0, NULL, NULL, NULL, NULL, NULL};
+		0, 0, -1, -1, -1, 0, 0, 0, NULL, NULL, NULL, NULL, NULL};
 	if (!check_args(ac, av))
 		cleanup(ginfo, 1);
 	ginfo->filename = av[1];

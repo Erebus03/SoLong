@@ -34,9 +34,7 @@ int	found_newline(t_gnl_list *node)
 
 void	extract(t_gnl_list *lst, char **line)
 {
-	int		i;
-	int		j;
-
+	int	 (i), (j);
 	if (!lst)
 		return ;
 	i = get_line_len(lst);
@@ -54,6 +52,11 @@ void	extract(t_gnl_list *lst, char **line)
 		lst = lst->next;
 	}
 	(*line)[i] = '\0';
+	if (i == 0)
+	{
+		free(*line);
+		*line = NULL;
+	}
 }
 
 void	clean(t_gnl_list **lst)
@@ -100,7 +103,8 @@ void	create_list(t_gnl_list **lst, int fd)
 			return ;
 		new_node->str = malloc(2);
 		bytes_read = read(fd, new_node->str, 1);
-		if (bytes_read == -1 || bytes_read == 0)
+		if (bytes_read == -1 || bytes_read == 0
+			|| new_node->str[0] == '\n')
 		{
 			free(new_node->str);
 			free(new_node);
@@ -127,6 +131,8 @@ char	*get_next_line(int fd)
 	if (!head)
 		return (NULL);
 	extract(head, &extracted_line);
+	if (extracted_line == NULL)
+		return (NULL);
 	clean(&head);
 	return (extracted_line);
 }

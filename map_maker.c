@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "solong.h"
+#include <stdio.h>
 
 void	free_map(int rows, char **map)
 {
@@ -99,6 +100,11 @@ int	populate_map(t_game *game)
 		line = get_next_line(game->fd);
 		if (!line)
 			return (0);
+		if (line[0] == '\n')
+		{
+			free(line);
+			cleanup(game, 1);
+		}
 		lines_read++;
 		ft_strncpy(game->map[i], line, game->cols);
 		if (!game->map[i])
@@ -112,8 +118,7 @@ int	populate_map(t_game *game)
 
 void	make_map(t_game *game)
 {
-	int	res;
-
+	int (res);
 	res = count_lines_and_columns(game);
 	if (res == -1)
 	{

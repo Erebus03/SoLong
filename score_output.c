@@ -21,6 +21,7 @@ void	update_score_display(t_game *game)
 		free(coins_eaten);
 	}
 }
+
 char *display_moves(t_game *game)
 {
     char *msg;
@@ -51,15 +52,4 @@ char *display_coins_eaten(t_game *game)
     msg = ft_strjoin(temp, ") Sheeps");
     free(temp);
     return (msg);
-}
-
-void	p_direction(t_game *game)
-{
-	int (x), (y);
-	x = game->p_pos[0];
-	y = game->p_pos[1];
-	if (game->map[y][x - 1] == '1')
-		game->direction = 0; //head to right
-	else
-		game->direction = 1;
 }

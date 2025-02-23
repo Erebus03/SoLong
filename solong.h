@@ -15,8 +15,6 @@
 
 # include "../minilibx-linux/mlx.h"
 # include "utils/utils.h"
-# include <string.h>
-# include <stdio.h>
 # include <stdlib.h>
 # include <fcntl.h>
 
@@ -63,6 +61,12 @@ typedef struct s_game
 	int		p_pos[2];
 	int		moves;
 	int		frame;
+	int		c_delay;
+	int		n_delay;
+	int		p_delay;
+	int		c_frame;
+	int		n_frame;
+	int		p_frame;
 	char	**map;
 	char	*filename;
 	void	*mlx;

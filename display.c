@@ -11,36 +11,87 @@
 /* ************************************************************************** */
 
 #include "solong.h"
-
-#define UP 65362
-#define DOWN 65364
-#define RIGHT 65363
-#define LEFT 65361
-#define CLOSE 65307
+#include <stdio.h>
 
 int	key_input(int key, t_game *game)
 {
-	if (key == UP)
+	if (key == 65362)
 		move_up(game, game->p_pos[0], game->p_pos[1]);
-	if (key == DOWN)
+	if (key == 65364)
 		move_down(game, game->p_pos[0], game->p_pos[1]);
-	if (key == RIGHT)
+	if (key == 65363)
 		move_right(game, game->p_pos[0], game->p_pos[1]);
-	if (key == LEFT)
+	if (key == 65361)
 		move_left(game, game->p_pos[0], game->p_pos[1]);
-	if (key == CLOSE)
+	if (key == 65307)
 		cleanup(game, 0);
 	return (0);
 }
 
 int	put_image(t_game *g, char cell, int x, int y)
 {
-	if (!g->mlx || !g->win)
-		return (0);
-	usleep(900); //		change it based on where your executing it
+	if (g->c_delay >= 100000)
+	{
+		g->c_frame++;
+		g->c_delay = 0;
+	}
+	g->c_delay++;
 	if (cell == 'C')
 		return (mlx_put_image_to_window(g->mlx, g->win
+				, g->imgs->coin[g->c_frame % 2], x * 50, y * 50));
+	if (g->p_delay >= 75000)
+	{
+		g->p_frame++;
+		g->p_delay = 0;
+	}
+	g->p_delay++;
+	if (cell == 'P')
+	{
+		if (g->direction == 0)
+			return (mlx_put_image_to_window(g->mlx, g->win,
+					g->imgs->p_left[g->p_frame % 2], x * 50, y * 50));
+		else
+			return (mlx_put_image_to_window(g->mlx, g->win,
+					g->imgs->p_right[g->p_frame % 2], x * 50, y * 50));
+	}
+	if (cell == 'E')
+	{
+		if (g->coin == g->collected)
+			return (mlx_put_image_to_window(g->mlx, g->win, g->imgs->exit,
+					x * 50, y * 50));
+		else
+			return (mlx_put_image_to_window(g->mlx, g->win, g->imgs->chained,
+					x * 50, y * 50));
+	}
+	if (g->n_delay >= 17500) // Adjust this value for smoother animation
+	{
+		g->n_frame++;
+		g->n_delay = 0; // Reset the delay counter
+	}
+	g->n_delay++;
+
+	if (cell == 'N')
+		return (mlx_put_image_to_window(g->mlx, g->win
+			, g->imgs->enemy[g->n_frame % 2], x * 50, y * 50));
+	return (0);
+}
+
+int	put_image2(t_game *g, char cell, int x, int y)
+{
+	if (cell == 'C')
+		g->c_delay += 1;
+	// if(g->c_delay == 0)
+		// printf("zero delay = %d\n", g->c_delay);
+	if (cell == 'C' && (g->c_delay == 0 || g->c_delay > 500000)) // adapt to linux
+	{
+		// if(g->c_delay == 0)
+		// 	printf("first delaay zero delay = %d\n", g->c_delay);
+		// printf("innn          delay = %d\n", g->c_delay);
+		g->c_delay = 0;
+		// printf("innn          delay = %d\n", g->c_delay);
+		return (mlx_put_image_to_window(g->mlx, g->win
 				, g->imgs->coin[g->frame % 2], x * 50, y * 50));
+	}
 	else if (cell == 'P' && g->direction == 0)
 		return (mlx_put_image_to_window(g->mlx, g->win
 				, g->imgs->p_left[g->frame % 2], x * 50, y * 50));
@@ -66,19 +117,16 @@ int	loop_init(t_game *g) // put cscore to screen
 {
 	int (x), (y);
 	g->frame++;
-	if (g->frame >= 12)
+	if (g->frame >= 2)
 		g->frame = 0;
-	y = 0;
 	update_score_display(g);
+	y = 0;
 	while (y < g->rows)
 	{
 		x = 0;
 		while (x < g->cols)
 		{
-			if (g->map[y][x] == '1')
-				mlx_put_image_to_window(g->mlx, g->win, g->imgs->wall,
-					x * 50, y * 50);
-			else if (g->map[y][x] == '0')
+			if (g->map[y][x] == '0')
 				mlx_put_image_to_window(g->mlx, g->win, g->imgs->floor,
 					x * 50, y * 50);
 			else
@@ -123,8 +171,8 @@ int	assigne_paths(t_paths **p)
 	(*p)->empty_bg = "pics/empty_bg.xpm";
 	(*p)->enemy[0] = "pics/enemy/1.xpm";
 	(*p)->enemy[1] = "pics/enemy/2.xpm";
-	(*p)->coin[0] = "pics/sheep/1.xpm";
-	(*p)->coin[1] = "pics/sheep/2.xpm";
+	(*p)->coin[0] = "pics/sheep/sheep1.xpm";
+	(*p)->coin[1] = "pics/sheep/sheep2.xpm";
 	(*p)->attack[0] = "pics/attack/1.xpm";
 	(*p)->attack[1] = "pics/attack/2.xpm";
 	(*p)->attack[2] = "pics/attack/3.xpm";

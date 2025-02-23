@@ -14,12 +14,20 @@
 
 void	attack(t_game *game, int x, int y)
 {
-	mlx_put_image_to_window(game->mlx, game->win, game->imgs->attack[0], x * 50, y * 50);
-	mlx_put_image_to_window(game->mlx, game->win, game->imgs->attack[1], x * 50, y * 50);
-	sleep(2);//remove this later
-	mlx_put_image_to_window(game->mlx, game->win, game->imgs->attack[2], x * 50, y * 50);
-	mlx_put_image_to_window(game->mlx, game->win, game->imgs->attack[3], x * 50, y * 50);
-
+	int	(i), (delay);
+	i = 0;
+	delay = 10000;
+	while (i++ < delay)
+		mlx_put_image_to_window(game->mlx, game->win, game->imgs->attack[0], x * 50, y * 50);
+	i = 0;
+	while (i++ < delay)
+		mlx_put_image_to_window(game->mlx, game->win, game->imgs->attack[1], x * 50, y * 50);
+	i = 0;
+	while (i++ < delay)
+		mlx_put_image_to_window(game->mlx, game->win, game->imgs->attack[2], x * 50, y * 50);
+	i = 0;
+	while (i++ < delay)
+		mlx_put_image_to_window(game->mlx, game->win, game->imgs->attack[3], x * 50, y * 50);
 }
 
 int	move_up(t_game *game, int x, int y)

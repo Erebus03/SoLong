@@ -14,7 +14,6 @@
 # define UTILS_H
 
 # include <stddef.h>
-# include <string.h>
 # include <unistd.h>
 # include <fcntl.h>
 # include <stdlib.h>
@@ -39,7 +38,7 @@ void		ft_lstclear(t_gnl_list **lst);
 void		create_t_gnl_list(t_gnl_list **lst, int fd);
 void		clean(t_gnl_list **lst);
 
-/* printf functions */
+/* ft_printf functions */
 int			ft_printf(const char *input, ...);
 int			put_s(char *s);
 int			put_nb(int n);
